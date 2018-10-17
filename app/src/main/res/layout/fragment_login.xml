@@ -100,7 +100,7 @@
         android:layout_marginStart="8dp"
         android:text="@string/register_here"
         android:textColor="#ffffff"
-        android:textSize="30sp"
+        android:textSize="30sp" 
         app:layout_constraintBottom_toTopOf="@+id/login_buttonLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
