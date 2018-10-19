@@ -18,8 +18,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".Profile" />
-        <activity android:name=".Register" />
-        <activity android:name=".ForgotPassword" />
         <activity android:name=".RegisterMain" />
         <activity android:name=".ForgotPass"></activity>
     </application>
