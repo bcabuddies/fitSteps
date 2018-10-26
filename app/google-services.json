@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "308106096471",
+    "firebase_url": "https://fitsteps-311ed.firebaseio.com",
+    "project_id": "fitsteps-311ed",
+    "storage_bucket": "fitsteps-311ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:308106096471:android:2a4fdce33a890940",
+        "android_client_info": {
+          "package_name": "com.bcabuddies.fitsteps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "308106096471-a7g4vbolqujb8g06pc7ce35ca9g0u41g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bcabuddies.fitsteps",
+            "certificate_hash": "211dc699e9bcfb990fad9ad08087592bc6e0d43f"
+          }
+        },
+        {
+          "client_id": "308106096471-m7bkivf0k2agfavpgp3e8ihk9lq4ai8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3obE-Ctu33r4tXbEM1DgwdCqOyxFo-Lc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "308106096471-m7bkivf0k2agfavpgp3e8ihk9lq4ai8b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

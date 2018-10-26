@@ -57,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:padding="4dp"
+                android:id="@+id/register2_fullName"
                 android:hint="Full Name"/>
         </android.support.design.widget.TextInputLayout>
 
