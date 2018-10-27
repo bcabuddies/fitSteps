@@ -67,7 +67,7 @@ public class RegisterSecondFrag extends Fragment {
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("name", name);
 
-                    firebaseFirestore.collection("Users").document(userId).set(map)
+                    firebaseFirestore.collection("Users").document(userId).update(map)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
