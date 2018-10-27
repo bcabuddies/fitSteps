@@ -1,17 +1,21 @@
 package com.bcabuddies.fitsteps;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,14 +32,12 @@ import java.util.HashMap;
  */
 public class RegisterThirdFrag extends Fragment {
 
-    private EditText ageET, weightET, genderET, heightET;
+    private EditText ageET, weightET, heightET;
+    private TextView genderET;
     private RadioButton ecto, meso, endo;
-    private Button submit;
     private String age, weight, gender, height, body = "";
     private Context context;
     private String uid;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
     private FirebaseFirestore firebaseFirestore;
 
     public RegisterThirdFrag() {
@@ -60,19 +62,40 @@ public class RegisterThirdFrag extends Fragment {
         meso = view.findViewById(R.id.reg3_radioMeso);
         endo = view.findViewById(R.id.reg3_radioEndo);
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
         uid = user.getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        submit = view.findViewById(R.id.reg3_btnSubmit);
+        final PopupMenu genderMenu = new PopupMenu(context, genderET, R.menu.gender_menu);
+        genderMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if (item.getItemId() == R.id.gender_male) {
+                    gender = "Male";
+                    genderET.setText("Male");
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.gender_female) {
+                    gender = "Female";
+                    genderET.setText("Female");
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        Button submit = view.findViewById(R.id.reg3_btnSubmit);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 age = ageET.getText().toString();
                 weight = weightET.getText().toString();
-                gender = genderET.getText().toString();
                 height = heightET.getText().toString();
 
                 if (ecto.isSelected())
@@ -100,13 +123,13 @@ public class RegisterThirdFrag extends Fragment {
                                 .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     Toast.makeText(context, "Details updated", Toast.LENGTH_SHORT).show();
-                                    Intent i = new Intent(context,Home.class);
+                                    Intent i = new Intent(context, Home.class);
                                     startActivity(i);
                                     getActivity().finish();
                                 } else {
-                                    Toast.makeText(context, "Some error "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Some error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
