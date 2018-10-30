@@ -4,17 +4,17 @@ Things completed
 2. Added features :
         Popupmenu in gender selection
         Name and other details is uploaded to firebase "Users/uid/"
+3. photo select
+4. photo compress and upload
 
    Test the App
 
 /---------------------------------------------------------------------------------------------/
 
 Things to do :
-    1. photo select
-    2. photo compress and upload
-    3. google and facebook login
-    4. google map on the home page with "start run" button and the "Target Run"
-    5. profile should include "Trophies/Achievements"
-    6. profile should include previous runs/walks
+    1. google and facebook login
+    2. google map on the home page with "start run" button and the "Target Run"
+    3. profile should include "Trophies/Achievements"
+    4. profile should include previous runs/walks
 
 /---------------------------------------------------------------------------------------------/
