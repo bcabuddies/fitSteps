@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,25 +68,35 @@ public class RegisterThirdFrag extends Fragment {
         uid = user.getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        final PopupMenu genderMenu = new PopupMenu(context, genderET, R.menu.gender_menu);
-        genderMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @SuppressLint("SetTextI18n")
+
+        genderET.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
+            public void onClick(View v) {
+                Log.e("gender", "onClick: " );
+                final PopupMenu genderMenu = new PopupMenu(context, genderET);
+                genderMenu.getMenuInflater().inflate(R.menu.gender_menu,genderMenu.getMenu());
+                genderMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
 
-                if (item.getItemId() == R.id.gender_male) {
-                    gender = "Male";
-                    genderET.setText("Male");
-                    return true;
-                }
+                        if (item.getItemId() == R.id.gender_male) {
+                            gender = "Male";
+                            genderET.setText("Male");
+                            return true;
+                        }
 
-                if (item.getItemId() == R.id.gender_female) {
-                    gender = "Female";
-                    genderET.setText("Female");
-                    return true;
-                }
+                        if (item.getItemId() == R.id.gender_female) {
+                            gender = "Female";
+                            genderET.setText("Female");
+                            return true;
+                        }
 
-                return false;
+                        return false;
+                    }
+                });
+
+                genderMenu.show();
             }
         });
 

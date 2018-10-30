@@ -39,5 +39,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:15.+'
     implementation 'com.google.firebase:firebase-core:15.+'
 
+    //image croper
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
+
+    //Compressor
+    implementation 'id.zelory:compressor:2.1.0'
+
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.google.firebase:firebase-storage:15.+'
+    implementation 'com.google.firebase:firebase-auth:15.+'
 }
