@@ -17,4 +17,8 @@
     <string name="height_in_cms">Height(in Cms)</string>
     <string name="weight_in_kgs">Weight(in Kgs)</string>
     <string name="age">Age</string>
+    <string name="distance">Distance:</string>
+    <string name="calories">Calories:</string>
+    <string name="steps">Steps:</string>
+    <string name="finish">Finish</string>
 </resources>

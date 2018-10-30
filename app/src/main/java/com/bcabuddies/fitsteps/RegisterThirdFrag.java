@@ -109,11 +109,13 @@ public class RegisterThirdFrag extends Fragment {
                 weight = weightET.getText().toString();
                 height = heightET.getText().toString();
 
-                if (ecto.isSelected())
+                body = "Endomorph";
+
+                if (ecto.isChecked())
                     body = "Ectomorph";
-                if (meso.isSelected())
+                if (meso.isChecked())
                     body = "Mesomorph";
-                if (endo.isSelected())
+                if (endo.isChecked())
                     body = "Endomorph";
 
                 if (age.isEmpty() || weight.isEmpty() || gender.isEmpty() || height.isEmpty()) {
