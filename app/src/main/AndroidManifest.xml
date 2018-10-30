@@ -27,6 +27,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".ForgotPass"></activity>
+        <activity android:name=".Run"></activity>
     </application>
 
 </manifest>

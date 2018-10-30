@@ -48,4 +48,5 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.google.firebase:firebase-storage:15.+'
     implementation 'com.google.firebase:firebase-auth:15.+'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
 }
