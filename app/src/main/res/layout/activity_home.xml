@@ -3,10 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     tools:context=".Home">
 
+    <android.support.v4.widget.DrawerLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/home_drawerLayout">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
@@ -20,5 +27,21 @@
     <include
         android:id="@+id/home_toolbar"
         layout="@layout/home_toolbar" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    <android.support.design.widget.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/homeNav_view"
+        android:layout_gravity="start"
+        app:menu="@menu/home_side_menu"
+        app:headerLayout="@layout/homnav_header"
+        >
+
+
+    </android.support.design.widget.NavigationView>
+
+    </android.support.v4.widget.DrawerLayout>
 
 </android.support.constraint.ConstraintLayout>
