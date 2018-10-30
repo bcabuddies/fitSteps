@@ -60,7 +60,7 @@ public class Home extends AppCompatActivity {
         runBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Home.this, Run.class);
+                Intent i = new Intent(Home.this, MapsActivity.class);
                 startActivity(i);
             }
         });
