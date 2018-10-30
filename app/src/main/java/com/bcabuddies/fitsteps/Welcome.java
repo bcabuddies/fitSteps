@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Welcome extends AppCompatActivity {
 
@@ -26,6 +28,14 @@ public class Welcome extends AppCompatActivity {
     private TextInputEditText userEmail, userPass;
     private Button btnLogin;
     TextView txtReg, txtForgotPass;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        auth.addAuthStateListener(mAuthListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +53,20 @@ public class Welcome extends AppCompatActivity {
         btnLogin = findViewById(R.id.login_loginBtn);
         txtReg = findViewById(R.id.login_register);
         txtForgotPass = findViewById(R.id.login_forgetPassword);
+
+
+        mAuthListener=new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseFirestore=FirebaseFirestore.getInstance();
+                if (firebaseAuth.getCurrentUser() != null) {
+                    Log.e("checkey", "Main onAuthStateChanged: " );
+                    startActivity(new Intent(Welcome.this, Home.class));
+                    finish();
+                }
+
+            }
+        };
 
 
         txtReg.setOnClickListener(new View.OnClickListener() {

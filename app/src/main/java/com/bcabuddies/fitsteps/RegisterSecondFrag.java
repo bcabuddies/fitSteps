@@ -82,10 +82,15 @@ public class RegisterSecondFrag extends Fragment {
 
                 if (name.isEmpty()) {
                     Toast.makeText(context, "Please Enter your name ", Toast.LENGTH_SHORT).show();
-                } else {
+                }else if(thumb_downloadUrl==null){
+                    Toast.makeText(context, "Please upload a profile picture", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
 
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("name", name);
+                    map.put("thumb_id",thumb_downloadUrl.toString());
 
                     try {
                         firebaseFirestore.collection("Users").document(userId).set(map)
