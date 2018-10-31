@@ -90,6 +90,25 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         });
 
 
+        thumb_image = findViewById(R.id.homeNav_thumbImage);
+        name = findViewById(R.id.homeNav_name);
+
+        //sending user to profile
+        thumb_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this, Profile.class));
+            }
+        });
+
+        //sending user to profile
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this, Profile.class));
+            }
+        });
+
         //loading thumb image and full name in side navbar
         firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -98,9 +117,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     thumbUrl = task.getResult().getString("thumb_id");
                     fullName = task.getResult().getString("name");
                     // name.setText(fullName);
-                    thumb_image = findViewById(R.id.homeNav_thumbImage);
-                    name = findViewById(R.id.homeNav_name);
-
 
                     thumb_image.setOnClickListener(new View.OnClickListener() {
                         @Override
