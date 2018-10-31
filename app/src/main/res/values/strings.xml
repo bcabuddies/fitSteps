@@ -22,4 +22,7 @@
     <string name="steps">Steps: 0 Steps</string>
     <string name="finish">Finish</string>
     <string name="title_activity_maps">Map</string>
+    <string name="name">Name</string>
+    <string name="achievement">Achievement\n0</string>
+    <string name="total_run">Total Run\n0</string>
 </resources>

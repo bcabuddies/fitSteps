@@ -65,7 +65,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         navigationView = findViewById(R.id.homeNav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        homeDataList=new ArrayList<>();
+        homeDataList = new ArrayList<>();
         homeRecyclerAdapter = new HomeRecyclerAdapter(homeDataList);
         recyclerView = findViewById(R.id.home_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -122,26 +122,40 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //home recyclerview data
         Query firstQuery = firebaseFirestore.collection("RunData")
                 .orderBy("time", Query.Direction.DESCENDING);
-        firstQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+        try {
+            firstQuery.addSnapshotListener(Home.this, new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+                    try {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (final DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                                if (documentChange.getType() == DocumentChange.Type.ADDED) {
 
-                for (final DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                                    String homePostId = documentChange.getDocument().getId();
+                                    Log.e("recyclertest", "homepostid: " + homePostId);
+                                    final HomeData homeData = documentChange.getDocument().toObject(HomeData.class).withID(homePostId);
+                                    homeDataList.add(homeData);
 
-                        String homePostId=documentChange.getDocument().getId();
-                        Log.e("recyclertest", "homepostid: "+homePostId );
-                        final HomeData homeData=documentChange.getDocument().toObject(HomeData.class).withID(homePostId);
-                        homeDataList.add(homeData);
-
-                        Log.e("recyclertest", "onEvent: homedatalist "+homeDataList );
-                        Log.e("recyclertest", "onEvent: homedata "+homeData );
-                        homeRecyclerAdapter.notifyDataSetChanged();
+                                    Log.e("recyclertest", "onEvent: homedatalist " + homeDataList);
+                                    Log.e("recyclertest", "onEvent: homedata " + homeData);
+                                    homeRecyclerAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        } else {
+                            Log.e(TAG, "onEvent: no data ");
+                            Toast.makeText(Home.this, "No data", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                        Log.e(TAG, "onEvent: exception " + e1.getMessage());
                     }
-                }
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "onCreate: Exception with recycler data " + e.getMessage());
+        }
 
 
     }
