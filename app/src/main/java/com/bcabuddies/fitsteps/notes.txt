@@ -17,4 +17,6 @@ Things to do :
     3. profile should include "Trophies/Achievements"
     4. profile should include previous runs/walks
 
+Work for Rahul -
+    1. Everything inside Profile.java, i.e., Profile picture and name, History, Achievement Button
 /---------------------------------------------------------------------------------------------/
