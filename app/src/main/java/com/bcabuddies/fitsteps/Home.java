@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -20,8 +22,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -36,6 +45,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private CircleImageView thumb_image;
     private TextView name;
     private NavigationView navigationView;
+    private ArrayList<HomeData> homeDataList;
+    private RecyclerView recyclerView;
+    private HomeRecyclerAdapter homeRecyclerAdapter;
+    private String TAG = "Home.java";
 
 
     @Override
@@ -51,6 +64,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         userId = auth.getCurrentUser().getUid();
         navigationView = findViewById(R.id.homeNav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        homeDataList=new ArrayList<>();
+        homeRecyclerAdapter = new HomeRecyclerAdapter(homeDataList);
+        recyclerView = findViewById(R.id.home_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(homeRecyclerAdapter);
 
         //side nav bar
         toogleNavigation.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +102,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     name = findViewById(R.id.homeNav_name);
 
 
+                    thumb_image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(Home.this, Profile.class));
+                        }
+                    });
+
                     Log.e("dpname", "onComplete: thumb: " + thumbUrl + "\n name: " + fullName);
                     try {
                         Log.e("dpname", "try");
@@ -102,8 +128,33 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
-    }
 
+        //home recyclerview data
+        Query firstQuery = firebaseFirestore.collection("RunData")
+                .orderBy("time", Query.Direction.DESCENDING);
+        firstQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+
+                for (final DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    if (documentChange.getType() == DocumentChange.Type.ADDED) {
+
+                        String homePostId=documentChange.getDocument().getId();
+                        Log.e("recyclertest", "homepostid: "+homePostId );
+                        final HomeData homeData=documentChange.getDocument().toObject(HomeData.class).withID(homePostId);
+                        homeDataList.add(homeData);
+
+                        Log.e("recyclertest", "onEvent: homedatalist "+homeDataList );
+                        Log.e("recyclertest", "onEvent: homedata "+homeData );
+                        homeRecyclerAdapter.notifyDataSetChanged();
+                    }
+                }
+
+            }
+        });
+
+
+    }
 
 
     //side navigagtion items clicked
@@ -117,7 +168,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_logout:
-                Toast.makeText(this, "Logout CLicked", Toast.LENGTH_SHORT).show();
+                auth.signOut();
+                startActivity(new Intent(Home.this, Welcome.class));
+                this.finish();
                 break;
 
         }
