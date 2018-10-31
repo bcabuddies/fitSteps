@@ -79,28 +79,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
-
-        //start run button
-        runBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Home.this, MapsActivity.class);
-                startActivity(i);
-            }
-        });
-
-
-        thumb_image = findViewById(R.id.homeNav_thumbImage);
-        name = findViewById(R.id.homeNav_name);
-
-        //sending user to profile
-        thumb_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home.this, Profile.class));
-            }
-        });
-
         //sending user to profile
         name.setOnClickListener(new View.OnClickListener() {
             @Override
