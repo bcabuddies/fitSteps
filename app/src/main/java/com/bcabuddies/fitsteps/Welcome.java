@@ -72,7 +72,7 @@ public class Welcome extends AppCompatActivity {
         txtReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Welcome.this, RegisterMain.class));
+                startActivity(new Intent(Welcome.this, AccountRegister.class));
             }
         });
 

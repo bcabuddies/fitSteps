@@ -3,10 +3,12 @@ package com.bcabuddies.fitsteps;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Button runBtn;
     private ImageView toogleNavigation;
@@ -33,6 +35,8 @@ public class Home extends AppCompatActivity {
     private String fullName, thumbUrl, userId;
     private CircleImageView thumb_image;
     private TextView name;
+    private NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,8 @@ public class Home extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         userId = auth.getCurrentUser().getUid();
-
+        navigationView = findViewById(R.id.homeNav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         //side nav bar
         toogleNavigation.setOnClickListener(new View.OnClickListener() {
@@ -100,4 +105,23 @@ public class Home extends AppCompatActivity {
     }
 
 
+
+    //side navigagtion items clicked
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_achievements:
+                Toast.makeText(this, "Achievements Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_settings:
+                Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_logout:
+                Toast.makeText(this, "Logout CLicked", Toast.LENGTH_SHORT).show();
+                break;
+
+        }
+
+        return true;
+    }
 }

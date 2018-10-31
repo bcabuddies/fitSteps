@@ -8,7 +8,7 @@ import android.view.Window;
 
 public class RegisterMain extends AppCompatActivity {
 
-    private RegisterFirstFrag registerFirstFrag;
+    private RegisterSecondFrag registerSecondFrag;
     private Window mWindow;
 
     @Override
@@ -22,9 +22,9 @@ public class RegisterMain extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
         setContentView(R.layout.activity_register_main);
 
-        registerFirstFrag=new RegisterFirstFrag();
+        registerSecondFrag=new RegisterSecondFrag();
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.registerMain_frame,registerFirstFrag);
+        ft.add(R.id.registerMain_frame,registerSecondFrag);
         ft.commit();
 
 
