@@ -6,6 +6,7 @@ Things completed
         Name and other details is uploaded to firebase "Users/uid/"
 3. photo select
 4. photo compress and upload
+5. Everything inside Profile.java, i.e., Profile picture and name, History, Achievement Button
 
    Test the App
 
@@ -17,6 +18,4 @@ Things to do :
     3. profile should include "Trophies/Achievements"
     4. profile should include previous runs/walks
 
-Work for Rahul -
-    1. Everything inside Profile.java, i.e., Profile picture and name, History, Achievement Button
 /---------------------------------------------------------------------------------------------/
