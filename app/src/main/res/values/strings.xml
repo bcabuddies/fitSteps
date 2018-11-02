@@ -23,6 +23,6 @@
     <string name="finish">Finish</string>
     <string name="title_activity_maps">Map</string>
     <string name="name">Name</string>
-    <string name="achievement">Achievement\n0</string>
-    <string name="total_run">Total Run\n0</string>
+    <string name="achievement">Achievements\n0</string>
+    <string name="total_run">Total Activities\n0</string>
 </resources>

@@ -71,6 +71,14 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(homeRecyclerAdapter);
 
+
+        runBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this,MapsActivity.class));
+            }
+        });
+
         //side nav bar
         toogleNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
