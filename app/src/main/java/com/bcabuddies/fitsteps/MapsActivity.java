@@ -1,8 +1,8 @@
 package com.bcabuddies.fitsteps;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,6 +28,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -36,12 +41,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
+    private Location currentLocation;
     private Marker mCurrLocationMarker;
     private LocationRequest mLocationRequest;
     private BottomSheetBehavior sheetBehavior;
     private CoordinatorLayout coordinatorLayout;
+    private ArrayList<LatLng> points;
+    private Polyline line;
     private int i = 0;
+    private final static String TAG = "MapsActivity.java";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        points = new ArrayList<>();
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
         View bottomSheet = findViewById(R.id.run_bottomSheet);
@@ -126,18 +136,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
+        Log.e(TAG, "onLocationChanged: location changed " );
+        currentLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
 
-        //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        points.add(latLng);
+
+        redrawLine();
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -149,11 +158,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }*/
     }
 
+    private void redrawLine() {
+        Log.e(TAG, "redrawLine: redrawLine Called" );
+        mMap.clear();
+
+        PolylineOptions options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
+        for (int j = 0; j < points.size(); j++) {
+            LatLng point = points.get(j);
+            options.add(point);
+        }
+        addMarket();
+        line = mMap.addPolyline(options);
+    }
+
+    private void addMarket() {
+        //Place current location marker
+        Log.e(TAG, "addMarket: add marker called " );
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(100);
-        mLocationRequest.setFastestInterval(50);
+        mLocationRequest.setInterval(50);
+        mLocationRequest.setFastestInterval(25);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
