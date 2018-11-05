@@ -1,5 +1,7 @@
 package com.bcabuddies.fitsteps;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -8,16 +10,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,26 +32,34 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener {
+        LocationListener {
 
 
+    @BindView(R.id.bottom_finishBtn)
+    Button bottomFinishBtn;
+    @BindView(R.id.bottom_distanceTV)
+    TextView bottomDistanceTV;
+    @BindView(R.id.bottom_calTV)
+    TextView bottomCalTV;
+    @BindView(R.id.bottom_stepTV)
+    TextView bottomStepTV;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private Location currentLocation;
     private Marker mCurrLocationMarker;
-    private LocationRequest mLocationRequest;
     private BottomSheetBehavior sheetBehavior;
-    private CoordinatorLayout coordinatorLayout;
     private ArrayList<LatLng> points;
-    private Polyline line;
     private int i = 0;
     private final static String TAG = "MapsActivity.java";
 
@@ -55,17 +67,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        ButterKnife.bind(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         points = new ArrayList<>();
 
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
         View bottomSheet = findViewById(R.id.run_bottomSheet);
         sheetBehavior = BottomSheetBehavior.from(bottomSheet);
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -85,10 +98,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 if (i == 0) {
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    i=1;
+                    i = 1;
                 }
-                if (i==1){
-                    i=0;
+                if (i == 1) {
+                    i = 0;
                 }
             }
         });
@@ -108,9 +121,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         //Initialize Google Play Services
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
@@ -134,9 +147,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGoogleApiClient.connect();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onLocationChanged(Location location) {
-        Log.e(TAG, "onLocationChanged: location changed " );
+        Log.e(TAG, "onLocationChanged: location changed ");
         currentLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
@@ -146,12 +160,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         points.add(latLng);
 
+        //to draw line
         redrawLine();
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(19));
 
+        //calculate distance
+        try {
+            LatLng lastLocation = points.get(points.size() - 1);
+            LatLng firstLocation = points.get(0);
+            Log.e(TAG, "onViewClicked: lastLocation = " + lastLocation + " FirstsLocation = " + firstLocation);
+            Double d = distanceCal(lastLocation.latitude, lastLocation.longitude, firstLocation.latitude, firstLocation.longitude);
+            Log.e(TAG, "onViewClicked: d " + d);
+            String dd = String.valueOf(d);
+            Log.e(TAG, "onViewClicked: dd " + dd);
+            dd = dd.substring(0, 3);
+            Log.e(TAG, "onViewClicked: dd after " + dd);
+            int dist = Integer.valueOf(dd.substring(0, 3));
+            Log.e(TAG, "onViewClicked: distance = " + dist);
+            //distance
+            bottomDistanceTV.setText("Distance :" + dist + " KM");
+            //steps = 1.4 in 1meter
+            String steps = String.valueOf(d * 1.25 * 1000);
+            steps = steps.substring(0, 4);
+            bottomStepTV.setText("Steps : " + steps);
+            //cal
+            String cal = String.valueOf(d * 25);
+            cal = cal.substring(0, 5);
+            bottomCalTV.setText("Calories : " + cal);
+
+            Log.e(TAG, "onViewClicked: cal " + cal + " steps " + steps);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "onViewClicked: exception " + e.getMessage());
+        }
         /*//stop location updates
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,  this);
@@ -159,7 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void redrawLine() {
-        Log.e(TAG, "redrawLine: redrawLine Called" );
+        Log.e(TAG, "redrawLine: redrawLine Called");
         mMap.clear();
 
         PolylineOptions options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
@@ -167,13 +211,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng point = points.get(j);
             options.add(point);
         }
+        //to add current location marker
         addMarket();
-        line = mMap.addPolyline(options);
     }
 
     private void addMarket() {
         //Place current location marker
-        Log.e(TAG, "addMarket: add marker called " );
+        Log.e(TAG, "addMarket: add marker called ");
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
@@ -184,13 +228,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(50);
         mLocationRequest.setFastestInterval(25);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) { LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, MapsActivity.this);
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            //noinspection deprecation
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, MapsActivity.this);
         }
     }
 
@@ -206,14 +252,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    public boolean checkLocationPermission() {
+    public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Asking user if explanation is needed
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -221,19 +267,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 //Prompt the user once explanation has been shown
                 ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
 
 
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
-            return false;
-        } else {
-            return true;
         }
     }
 
@@ -249,7 +292,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // permission was granted. Do the
                     // contacts-related task you need to do.
                     if (ContextCompat.checkSelfPermission(this,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION)
+                            Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
                         if (mGoogleApiClient == null) {
@@ -268,5 +311,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // other 'case' lines to check for other permissions this app might request.
             // You can add here other case statements according to your requirement.
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    @OnClick(R.id.bottom_finishBtn)
+    public void onViewClicked() {
+        Log.e(TAG, "onViewClicked: end run clicked ");
+        try {
+            LatLng lastLocation = points.get(points.size() - 1);
+            LatLng firstLocation = points.get(0);
+            Log.e(TAG, "onViewClicked: lastLocation = " + lastLocation + " FirstsLocation = " + firstLocation);
+            //change lat/lon with lastLocation.lat/lon, long=77 lat=28 delhi
+            Double d = distanceCal(lastLocation.latitude, lastLocation.longitude, firstLocation.latitude, firstLocation.longitude);
+            Log.e(TAG, "onViewClicked: d " + d);
+            String dist = String.valueOf(d);
+            Log.e(TAG, "onViewClicked: dd " + dist);
+            dist = dist.substring(0, 3);
+            Log.e(TAG, "onViewClicked: dd after " + dist);
+            Log.e(TAG, "onViewClicked: distance = " + dist);
+            //distance
+            bottomDistanceTV.setText("Distance :" + dist + " KM");
+            //steps = 1.4 in 1meter
+            String steps = String.valueOf(d * 1.25 * 1000);
+            steps = steps.substring(0, 4);
+            bottomStepTV.setText("Steps : " + steps);
+            //cal
+            String cal = String.valueOf(d * 25);
+            cal = cal.substring(0, 5);
+            bottomCalTV.setText("Calories : " + cal);
+
+            //use this data to store in firebase.
+            Log.e(TAG, "onViewClicked: cal " + cal + " steps " + steps+" dist "+dist);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "onViewClicked: exception " + e.getMessage());
+        }
+    }
+
+    private Double distanceCal(double lat1, double lon1, double lat2, double lon2) {
+        Location startPoint = new Location("locationA");
+        startPoint.setLatitude(lat2);
+        startPoint.setLongitude(lon2);
+
+        Location endPoint = new Location("locationA");
+        endPoint.setLatitude(lat1);
+        endPoint.setLongitude(lon1);
+
+        return (double) (startPoint.distanceTo(endPoint) / 1000);
     }
 }

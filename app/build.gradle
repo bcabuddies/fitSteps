@@ -51,4 +51,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:15.+'
     implementation 'com.google.android.gms:play-services-maps:15.+'
     implementation 'com.google.android.gms:play-services-location:15.+'
+
+    //butterknife
+    implementation 'com.jakewharton:butterknife:9.0.0-rc1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
 }
