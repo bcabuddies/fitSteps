@@ -53,8 +53,10 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         final String homePostId = homeDataList.get(i).HomeDataId;
         final String homeDataUserId = homeDataList.get(i).getUid();
 
-        final String full_name = homeDataList.get(i).getName();
+     //   final String full_name = homeDataList.get(i).getName();
         final String distance = homeDataList.get(i).getDistance();
+        final String cal=homeDataList.get(i).getCalories();
+        final String step=homeDataList.get(i).getSteps();
         Date date = homeDataList.get(i).getTime();
 
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMM yy \t HH:mm");
@@ -65,10 +67,12 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()) {
                     String thumb_url = task.getResult().getString("thumb_id");
+                    String fullName=task.getResult().getString("name");
                     viewHolder.setThumb_image(thumb_url);
-                    viewHolder.setName(full_name);
+                    viewHolder.setName(fullName);
                     viewHolder.setDistance(distance);
-
+                    viewHolder.setCalories(cal);
+                    viewHolder.setSteps(step);
                     viewHolder.setTime_stamp(nowMMDDYYYY);
 
                 }
@@ -78,7 +82,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
 
         Log.e("recyclertest", "homepostid on adapter: " + homePostId);
         Log.e("recyclertest", "homedatauserid: " + homeDataUserId);
-        Log.e("recyclertest", "fullname " + full_name);
+        Log.e("recyclertest", "fullname ");
         Log.e("recyclertest", "distance:  " + distance);
 
 
@@ -98,7 +102,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
 
         private View mView;
         private CircleImageView thumb_image;
-        private TextView name, distance, time_stamp;
+        private TextView name, distance, time_stamp,steps,calories;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -108,6 +112,9 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             name = mView.findViewById(R.id.homerow_name);
             distance = mView.findViewById(R.id.homerow_distance);
             time_stamp = mView.findViewById(R.id.homerow_time);
+            steps=mView.findViewById(R.id.homerow_steps);
+            calories=mView.findViewById(R.id.homerow_cal);
+
         }
 
 
@@ -120,11 +127,18 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         }
 
         public void setDistance(String dist) {
-            distance.setText(dist);
+            distance.setText("Distance: "+dist);
         }
 
         public void setTime_stamp(StringBuilder time) {
             time_stamp.setText(time);
         }
+        public void setSteps(String step){
+            steps.setText("Steps: "+step);
+        }
+        public void setCalories(String cal){
+            calories.setText("Calories: "+cal);
+        }
     }
+
 }

@@ -4,17 +4,35 @@ import java.util.Date;
 
 public class HomeData extends HomeDataId{
 
-    private String distance,name,uid;
+    private String distance,name,uid,calories,steps;
     private Date time;
 
     public HomeData() {
     }
 
-    public HomeData(String distance, String name, String uid, Date time) {
+    public HomeData(String distance, String name, String uid, String calories, String steps, Date time) {
         this.distance = distance;
         this.name = name;
         this.uid = uid;
+        this.calories = calories;
+        this.steps = steps;
         this.time = time;
+    }
+
+    public String getCalories() {
+        return calories;
+    }
+
+    public void setCalories(String calories) {
+        this.calories = calories;
+    }
+
+    public String getSteps() {
+        return steps;
+    }
+
+    public void setSteps(String steps) {
+        this.steps = steps;
     }
 
     public String getDistance() {

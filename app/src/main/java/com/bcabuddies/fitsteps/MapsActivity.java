@@ -33,8 +33,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +68,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location currentLocation;
     private Marker mCurrLocationMarker;
     private BottomSheetBehavior sheetBehavior;
+    private FirebaseAuth auth;
+    private FirebaseFirestore firebaseFirestore;
+    private String userId;
     private ArrayList<LatLng> points;
     private int i = 0;
     private final static String TAG = "MapsActivity.java";
@@ -71,6 +83,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -335,6 +349,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String steps = String.valueOf(d * 1.25 * 1000);
             steps = steps.substring(0, 4);
             bottomStepTV.setText("Steps : " + steps);
+
             //cal
             String cal = String.valueOf(d * 25);
             cal = cal.substring(0, 5);
@@ -342,6 +357,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             //use this data to store in firebase.
             Log.e(TAG, "onViewClicked: cal " + cal + " steps " + steps+" dist "+dist);
+
+            //Storing data into firebase
+            firebaseFirestore=FirebaseFirestore.getInstance();
+            auth=FirebaseAuth.getInstance();
+            userId=auth.getCurrentUser().getUid();
+
+            Map<String,Object> map=new HashMap<>();
+            map.put("distance",dist);
+            map.put("calories",cal);
+            map.put("steps",steps);
+            map.put("uid",userId);
+            map.put("time",FieldValue.serverTimestamp());
+
+            firebaseFirestore.collection("RunData").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentReference> task) {
+                    Toast.makeText(MapsActivity.this, "Data added successfully", Toast.LENGTH_SHORT).show();      
+                }
+            });
+
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "onViewClicked: exception " + e.getMessage());

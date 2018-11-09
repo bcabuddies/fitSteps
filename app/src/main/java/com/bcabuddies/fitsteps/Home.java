@@ -129,7 +129,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         //home recyclerview data
         Query firstQuery = firebaseFirestore.collection("RunData")
-                .orderBy("time", Query.Direction.DESCENDING);
+                .orderBy("time", Query.Direction.DESCENDING).whereEqualTo("uid",userId);
         try {
             firstQuery.addSnapshotListener(Home.this, new EventListener<QuerySnapshot>() {
                 @Override
