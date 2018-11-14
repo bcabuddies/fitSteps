@@ -100,12 +100,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     thumb_image = findViewById(R.id.homeNav_thumbImage);
                     name = findViewById(R.id.homeNav_name);
 
+/*
                     thumb_image.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             startActivity(new Intent(Home.this, Profile.class));
                         }
-                    });
+                    });*/
 
                     Log.e("dpname", "onComplete: thumb: " + thumbUrl + "\n name: " + fullName);
                     try {
@@ -177,7 +178,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 Toast.makeText(this, "Achievements Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_settings:
-                Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Home.this,SettingsMain.class));
                 break;
             case R.id.menu_logout:
                 auth.signOut();
