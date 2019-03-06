@@ -16,10 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Steps extends AppCompatActivity implements SensorEventListener {
 
@@ -55,10 +61,10 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         firebaseFirestore.collection("Users").document(userId).collection("user_data").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-           if (task.getResult().exists()){
-               userWeight= Double.valueOf(task.getResult().getString("weight"));
-               userHeight=Double.valueOf(task.getResult().getString("height"));
-           }
+                if (task.getResult().exists()) {
+                    userWeight = Double.valueOf(task.getResult().getString("weight"));
+                    userHeight = Double.valueOf(task.getResult().getString("height"));
+                }
             }
         });
 
@@ -67,10 +73,27 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
             @Override
             public void onClick(View v) {
 
-                editor.putInt("steps_value",0);
+                editor.putInt("steps_value", 0);
                 editor.apply();
                 stepsCount.setText("0");
 
+                Map<String, Object> map = new HashMap<>();
+                map.put("steps", stepsValue.toString());
+                map.put("calories", caloriesBurned.toString());
+                map.put("distance", String.format("%.2f", distance) + " Km");
+                map.put("time", FieldValue.serverTimestamp());
+                map.put("uid", userId);
+                firebaseFirestore.collection("RunData").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        Toast.makeText(Steps.this, "Finished Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Steps.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 // stepsCount.setText("0");
             }
@@ -96,7 +119,6 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         Log.e("my_prefs", "onResume: " + prefs.getInt("steps_value", 0));
         stepsCount.setText(stepsValue.toString());
     }
-
 
 
     @Override
@@ -129,7 +151,7 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
 
         } else {
             event.values[0] = 0;
-            }
+        }
 
     }
 
