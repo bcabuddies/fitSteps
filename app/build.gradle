@@ -54,5 +54,5 @@ dependencies {
 
     //butterknife
     implementation 'com.jakewharton:butterknife:9.0.0-rc1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
+  //mplementation 'org.jetbrains:annotations-java5:15.0'
 }

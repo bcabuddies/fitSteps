@@ -75,7 +75,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         runBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Home.this,MapsActivity.class));
+                startActivity(new Intent(Home.this,Steps.class));
             }
         });
 
@@ -130,7 +130,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         //home recyclerview data
         Query firstQuery = firebaseFirestore.collection("RunData")
-                .orderBy("time", Query.Direction.DESCENDING).whereEqualTo("uid",userId);
+                .orderBy("time", Query.Direction.DESCENDING).whereEqualTo("uid",auth.getCurrentUser().getUid().toString());
         try {
             firstQuery.addSnapshotListener(Home.this, new EventListener<QuerySnapshot>() {
                 @Override
@@ -151,19 +151,19 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                                 }
                             }
                         } else {
-                            Log.e(TAG, "onEvent: no data ");
+                            Log.e("mytest1", "onEvent: no data ");
                             Toast.makeText(Home.this, "No data", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e1) {
                         e1.printStackTrace();
-                        Log.e(TAG, "onEvent: exception " + e1.getMessage());
+                        Log.e("mytest2", "onEvent: exception " + e1.getMessage());
                     }
 
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "onCreate: Exception with recycler data " + e.getMessage());
+            Log.e("mytest3", "onCreate: Exception with recycler data " + e.getMessage());
         }
 
 
@@ -174,9 +174,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.menu_achievements:
-                Toast.makeText(this, "Achievements Clicked", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.menu_settings:
                 startActivity(new Intent(Home.this,SettingsMain.class));
                 break;

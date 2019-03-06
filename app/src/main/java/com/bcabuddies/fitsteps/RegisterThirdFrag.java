@@ -24,7 +24,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 
@@ -69,40 +72,42 @@ public class RegisterThirdFrag extends Fragment {
         uid = user.getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("Users").document(uid).collection("user_data").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-           if (task.getResult().exists()){
-               String age,weight,gender,height,body;
+                if (task.getResult().exists()){
+                    String age,weight,gender,height,body;
 
-               age=task.getResult().getString("age");
-               ageET.setText(age);
+                    age=task.getResult().getString("age");
+                    ageET.setText(age);
 
-               weight=task.getResult().getString("weight");
-               weightET.setText(weight);
+                    weight=task.getResult().getString("weight");
+                    weightET.setText(weight);
 
-               gender=task.getResult().getString("gender");
-               genderET.setText(gender);
+                    gender=task.getResult().getString("gender");
+                    genderET.setText(gender);
 
-               height=task.getResult().getString("height");
-               heightET.setText(height);
+                    height=task.getResult().getString("height");
+                    heightET.setText(height);
 
-               body=task.getResult().getString("body");
-                if (body.equals("Mesomorph")){
-                    meso.setChecked(true);
+                    body=task.getResult().getString("body");
+                    if (body.equals("Mesomorph")){
+                        meso.setChecked(true);
+                    }
+                    if (body.equals("Ectomorph")){
+                        ecto.setChecked(true);
+                    }
+                    if (body.equals("Endomorph")){
+                        endo.setChecked(true);
+                    }
+
                 }
-                if (body.equals("Ectomorph")){
-                    ecto.setChecked(true);
-                }
-                if (body.equals("Endomorph")){
-                    endo.setChecked(true);
+                else{
+                    Toast.makeText(context, "No record found please fill the data", Toast.LENGTH_SHORT).show();
                 }
 
-           }
             }
         });
-
-
 
         genderET.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,10 +170,9 @@ public class RegisterThirdFrag extends Fragment {
                         map.put("gender", gender);
                         map.put("height", height);
                         map.put("body", body);
-                        map.put("uid", uid);
 
-                        firebaseFirestore.collection("Users").document(uid)
-                                .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        firebaseFirestore.collection("Users").document(uid).collection("user_data").document(uid)
+                                .set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
