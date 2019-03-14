@@ -7,7 +7,6 @@
     tools:context=".ForgotPass">
 
 
-
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -26,11 +25,11 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/edittext_background"
         android:padding="6dp"
+        android:transitionName="email_transition"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        android:transitionName="email_transition">
+        app:layout_constraintTop_toBottomOf="parent">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/forgot_emailEditText"
@@ -40,8 +39,8 @@
             android:hint="Email"
             android:inputType="text"
             android:padding="4dp"
-            android:textSize="20dp"
-            android:textColor="#000000" />
+            android:textColor="#000000"
+            android:textSize="20dp" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -55,10 +54,10 @@
         android:background="@drawable/login_button_layout"
         android:text="Submit"
         android:textSize="20dp"
+        android:transitionName="btnLogin_transition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintRight_toLeftOf="parent"
-        android:transitionName="btnLogin_transition"/>
+        app:layout_constraintRight_toLeftOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

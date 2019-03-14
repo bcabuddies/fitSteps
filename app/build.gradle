@@ -56,5 +56,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:15.+'
     //butterknife
     implementation 'com.jakewharton:butterknife:9.0.0-rc1'
-  //mplementation 'org.jetbrains:annotations-java5:15.0'
+    //mplementation 'org.jetbrains:annotations-java5:15.0'
 }

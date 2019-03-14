@@ -29,25 +29,22 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Welcome extends AppCompatActivity {
 
 
     private static final String TAG = "Welcome.java";
+    private static final int RC_SIGN_IN = 1;
+    TextView txtReg, txtForgotPass;
+    SignInButton googleSignInBtn;
+    String fNname, profUrl;
     private Window mWindow;
     private FirebaseAuth auth;
     private String email, password;
     private TextInputEditText userEmail, userPass;
     private Button btnLogin;
-    TextView txtReg, txtForgotPass;
-    private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    SignInButton googleSignInBtn;
     private GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 1;
-    String fNname, profUrl;
 
     @Override
     protected void onStart() {
@@ -71,11 +68,10 @@ public class Welcome extends AppCompatActivity {
         txtReg = findViewById(R.id.login_register);
         txtForgotPass = findViewById(R.id.login_forgetPassword);
         googleSignInBtn = findViewById(R.id.login_googlebtn);
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                firebaseFirestore = FirebaseFirestore.getInstance();
+
                 if (firebaseAuth.getCurrentUser() != null) {
                     Log.e("checkey", "Main onAuthStateChanged: ");
                     startActivity(new Intent(Welcome.this, Home.class));
@@ -191,13 +187,21 @@ public class Welcome extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
+                            Log.e(TAG, "onComplete: myexception: " + task.getException().toString());
                             try {
+                                Log.e(TAG, "onComplete: googlesign try");
                                 Toast.makeText(Welcome.this, "Login Error", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
+                                Log.e(TAG, "onComplete: googlesign catch");
+                                Toast.makeText(Welcome.this, "login erorr", Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
                         } else {
-                            Intent intent=new Intent(Welcome.this,RegisterSecondFrag.class);
+                            Log.e(TAG, "onComplete: googlesign else");
+                            Toast.makeText(Welcome.this, "login success", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(Welcome.this, PostRegisterFirst.class);
+                            intent.putExtra("name", fNname);
+                            intent.putExtra("profUrl", profUrl);
                             startActivity(intent);
                         }
                     }

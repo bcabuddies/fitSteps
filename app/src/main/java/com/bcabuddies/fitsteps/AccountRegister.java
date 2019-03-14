@@ -50,22 +50,14 @@ public class AccountRegister extends AppCompatActivity {
                             @Override
                             public void onSuccess(AuthResult authResult) {
                                 Toast.makeText(AccountRegister.this, "User created successfully", Toast.LENGTH_SHORT).show();
-                                RegisterSecondFrag registerSecondFrag = new RegisterSecondFrag();
-                                startActivity(new Intent(AccountRegister.this,RegisterMain.class));
+                                startActivity(new Intent(AccountRegister.this,PostRegisterFirst.class));
                             }
                         });
                     } else {
                         Toast.makeText(AccountRegister.this, "Password did not match", Toast.LENGTH_SHORT).show();
                     }
                 }
-
-
             }
         });
-
-
-
-
-
     }
 }
