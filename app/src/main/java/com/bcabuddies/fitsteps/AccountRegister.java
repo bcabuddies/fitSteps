@@ -22,15 +22,11 @@ public class AccountRegister extends AppCompatActivity {
     private FirebaseAuth auth;
     private String email, password, confirmPass;
     private FirebaseFirestore firebaseFirestore;
-    private String userId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_register);
-
-
 
         userEmail = findViewById(R.id.regiter_emailEditText);
         userPass = findViewById(R.id.register_passEditText);
@@ -46,16 +42,13 @@ public class AccountRegister extends AppCompatActivity {
                 password = userPass.getText().toString();
                 confirmPass = userCpass.getText().toString();
 
-
                 if (email.equals("") || password.equals("")) {
                     Toast.makeText(AccountRegister.this, "Please. fill all info", Toast.LENGTH_SHORT).show();
                 } else {
                     if (password.equals(confirmPass)) {
-
                         auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
-
                                 Toast.makeText(AccountRegister.this, "User created successfully", Toast.LENGTH_SHORT).show();
                                 RegisterSecondFrag registerSecondFrag = new RegisterSecondFrag();
                                 startActivity(new Intent(AccountRegister.this,RegisterMain.class));

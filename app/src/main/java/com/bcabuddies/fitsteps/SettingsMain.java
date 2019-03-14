@@ -16,9 +16,7 @@ public class SettingsMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_main);
-
         settingsFrag=new SettingsFrag();
-
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         ft.add(R.id.settings_frame,settingsFrag);
         ft.commit();

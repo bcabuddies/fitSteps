@@ -55,18 +55,15 @@ public class RegisterThirdFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_register_third, container, false);
-
         context = view.getContext();
 
         ageET = view.findViewById(R.id.reg3_ageText);
         weightET = view.findViewById(R.id.reg3_weightText);
         genderET = view.findViewById(R.id.reg3_genderText);
         heightET = view.findViewById(R.id.reg3_heightText);
-
         ecto = view.findViewById(R.id.reg3_radioEcto);
         meso = view.findViewById(R.id.reg3_radioMeso);
         endo = view.findViewById(R.id.reg3_radioEndo);
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         uid = user.getUid();
@@ -80,16 +77,12 @@ public class RegisterThirdFrag extends Fragment {
 
                     age=task.getResult().getString("age");
                     ageET.setText(age);
-
                     weight=task.getResult().getString("weight");
                     weightET.setText(weight);
-
                     gender=task.getResult().getString("gender");
                     genderET.setText(gender);
-
                     height=task.getResult().getString("height");
                     heightET.setText(height);
-
                     body=task.getResult().getString("body");
                     if (body.equals("Mesomorph")){
                         meso.setChecked(true);
@@ -100,7 +93,6 @@ public class RegisterThirdFrag extends Fragment {
                     if (body.equals("Endomorph")){
                         endo.setChecked(true);
                     }
-
                 }
                 else{
                     Toast.makeText(context, "No record found please fill the data", Toast.LENGTH_SHORT).show();

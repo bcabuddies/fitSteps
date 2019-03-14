@@ -52,6 +52,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:15.+'
     implementation 'com.google.android.gms:play-services-location:15.+'
 
+    //google sign in
+    implementation 'com.google.android.gms:play-services-auth:15.+'
     //butterknife
     implementation 'com.jakewharton:butterknife:9.0.0-rc1'
   //mplementation 'org.jetbrains:annotations-java5:15.0'

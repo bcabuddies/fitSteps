@@ -76,7 +76,6 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
                 editor.putInt("steps_value", 0);
                 editor.apply();
                 stepsCount.setText("0");
-
                 Map<String, Object> map = new HashMap<>();
                 map.put("steps", stepsValue.toString());
                 map.put("calories", caloriesBurned.toString());
@@ -113,7 +112,6 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         } else {
             Toast.makeText(this, "Sensor not found", Toast.LENGTH_SHORT).show();
         }
-
         SharedPreferences prefs = getSharedPreferences("my_pref", MODE_PRIVATE);
         stepsValue = prefs.getInt("steps_value", 0);
         Log.e("my_prefs", "onResume: " + prefs.getInt("steps_value", 0));
@@ -128,15 +126,11 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         //sensorManager.unregisterListener(this);
     }
 
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (running) {
-
-
             editor.putInt("steps_value", stepsValue);
             editor.apply();
-
             stepsCount.setText(stepsValue.toString());
             stepsValue = stepsValue + 1;
             caloriesBurnedPerMile = 0.57 * userWeight;
@@ -147,8 +141,6 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
             calBurned.setText(caloriesBurned.toString() + " cal");
             distance = (stepsValue * strip) / 100000;
             distCovered.setText(String.format("%.2f", distance) + " Km");
-
-
         } else {
             event.values[0] = 0;
         }

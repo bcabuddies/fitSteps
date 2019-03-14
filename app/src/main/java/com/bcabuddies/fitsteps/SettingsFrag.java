@@ -29,7 +29,6 @@ public class SettingsFrag extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-
         profile = view.findViewById(R.id.settings_profile);
         basicInfo = view.findViewById(R.id.settings_basic);
 
@@ -37,9 +36,7 @@ public class SettingsFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 registerSecondFrag = new RegisterSecondFrag();
-
                 getFragmentManager().beginTransaction().replace(R.id.settings_frame, registerSecondFrag).addToBackStack(null).commit();
-
             }
         });
 

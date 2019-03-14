@@ -19,20 +19,17 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="parent"
-
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
-        >
+        app:layout_constraintTop_toBottomOf="parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/register2_profile"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginTop="4dp"
-
             android:src="@drawable/reg_profile"
-            android:id="@+id/register2_profile"
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintRight_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,22 +41,22 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="8dp"
-            android:padding="6dp"
             android:background="@drawable/edittext_background"
+            android:padding="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/register2_profile">
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/register2_fullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:padding="4dp"
                 android:autofillHints="name"
-                android:id="@+id/register2_fullName"
-                android:hint="Full Name"/>
+                android:background="@null"
+                android:hint="Full Name"
+                android:padding="4dp"
+                android:textSize="20dp" />
         </android.support.design.widget.TextInputLayout>
 
 
@@ -67,17 +64,17 @@
 
     <Button
         android:id="@+id/register2_btnNext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="180dp"
+        android:layout_height="55dp"
         android:layout_marginStart="90dp"
         android:layout_marginEnd="90dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/login_button_layout"
         android:text="Next"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="20dp"
-        android:background="@drawable/login_button_layout"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

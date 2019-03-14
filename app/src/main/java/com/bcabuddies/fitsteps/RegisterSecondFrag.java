@@ -141,10 +141,8 @@ public class RegisterSecondFrag extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
             if (resultCode == getActivity().RESULT_OK) {
-
                 mainImageUri = result.getUri();
                 Log.v("mkeyreg", "mianuri= " + mainImageUri);
-
                 File thumb_filePathUri = new File(mainImageUri.getPath());
                 try {
                     thumb_Bitmap = new Compressor(getActivity()).setMaxWidth(200).setMaxHeight(200).setQuality(50).compressToBitmap(thumb_filePathUri);
@@ -155,21 +153,15 @@ public class RegisterSecondFrag extends Fragment {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 thumb_Bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
                 final byte[] thumb_byte = byteArrayOutputStream.toByteArray();
-
-
                 final StorageReference thumb_filePath = thumbImgRef.child(userId + ".jpg");
-
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setMessage("Please wait...");
                 progressDialog.show();
                 progressDialog.setCanceledOnTouchOutside(false);
-
                 thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                         thumb_downloadUrl = taskSnapshot.getDownloadUrl();
-
                         Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
                         thumbImage.setImageURI(mainImageUri);
                         progressDialog.dismiss();
