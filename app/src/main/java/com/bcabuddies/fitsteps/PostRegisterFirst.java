@@ -1,15 +1,10 @@
 package com.bcabuddies.fitsteps;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 
@@ -68,7 +66,7 @@ public class PostRegisterFirst extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if (profUrl==null){
+        if (profUrl == null) {
             Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/fitsteps-311ed.appspot.com/o/default_user_thumb%2Fdefault.png?alt=media&token=c2de219c-9430-48bf-84c1-b2ba0b37be66").into(thumbImage);
         }
 
@@ -79,18 +77,17 @@ public class PostRegisterFirst extends AppCompatActivity {
                 if (name.isEmpty()) {
                     Toast.makeText(PostRegisterFirst.this, "Please Enter your name ", Toast.LENGTH_SHORT).show();
                 } else if (thumb_downloadUrl == null) {
-                        if (!(profUrl ==null)){
-                           thumb_downloadUrl= thumb_downloadUrl.parse(profUrl);
-                        }
-                        else{
-                            thumb_downloadUrl=thumb_downloadUrl.parse("https://firebasestorage.googleapis.com/v0/b/fitsteps-311ed.appspot.com/o/default_user_thumb%2Fdefault.png?alt=media&token=c2de219c-9430-48bf-84c1-b2ba0b37be66");
-                            }
+                    if (!(profUrl == null)) {
+                        thumb_downloadUrl = thumb_downloadUrl.parse(profUrl);
+                    } else {
+                        thumb_downloadUrl = thumb_downloadUrl.parse("https://firebasestorage.googleapis.com/v0/b/fitsteps-311ed.appspot.com/o/default_user_thumb%2Fdefault.png?alt=media&token=c2de219c-9430-48bf-84c1-b2ba0b37be66");
+                    }
                     // Toast.makeText(PostRegisterFirst.this, "Please upload a profile picture", Toast.LENGTH_SHORT).show();
                 } else {
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("name", name);
                     map.put("thumb_id", thumb_downloadUrl.toString());
-                    Log.e(TAG, "onClick: thumburll:"+thumb_downloadUrl.toString() );
+                    Log.e(TAG, "onClick: thumburll:" + thumb_downloadUrl.toString());
                     try {
                         firebaseFirestore.collection("Users").document(userId).set(map)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
