@@ -158,7 +158,7 @@ public class PostRegisterFirst extends AppCompatActivity {
                 thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        thumb_downloadUrl = taskSnapshot.getDownloadUrl();
+                        thumb_downloadUrl = (Uri) Uri.parse(String.valueOf(taskSnapshot.getMetadata().getReference().getDownloadUrl()));
                         Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
                         thumbImage.setImageURI(mainImageUri);
                         progressDialog.dismiss();
