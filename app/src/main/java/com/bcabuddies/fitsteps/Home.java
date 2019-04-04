@@ -2,12 +2,12 @@ package com.bcabuddies.fitsteps;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -96,18 +96,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     thumbUrl = task.getResult().getString("thumb_id");
                     fullName = task.getResult().getString("name");
                     // name.setText(fullName);
-
                     thumb_image = findViewById(R.id.homeNav_thumbImage);
                     name = findViewById(R.id.homeNav_name);
-
-/*
-                    thumb_image.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(Home.this, Profile.class));
-                        }
-                    });*/
-
                     Log.e("dpname", "onComplete: thumb: " + thumbUrl + "\n name: " + fullName);
                     try {
                         Log.e("dpname", "try");
@@ -168,7 +158,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
 
     }
-
 
     //side navigagtion items clicked
     @Override

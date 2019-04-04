@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostRegisterSecond">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/register3_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reg3_cons1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/reg3_btnSubmit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg3_agelayout"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg3_ageText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/age"
+                android:inputType="number"
+                android:padding="10dp"
+
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg3_weightlayout"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/reg3_heightlayout"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg3_weightText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/weight_in_kgs"
+                android:inputType="number"
+                android:padding="10dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg3_heightlayout"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg3_weightlayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg3_heightText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/height_in_cms"
+                android:inputType="number"
+                android:padding="10dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/reg3_bodyText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:text="@string/my_body_type"
+            android:textColor="#ffffff"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reg3_heightlayout" />
+
+        <ImageView
+            android:id="@+id/reg3_ectoImage"
+            android:layout_width="120dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ectomorph"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg3_bodyText"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/reg3_mesoImage"
+            android:layout_width="120dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/mesomorph"
+            app:layout_constraintEnd_toStartOf="@+id/reg3_endImage"
+            app:layout_constraintStart_toEndOf="@+id/reg3_ectoImage"
+            app:layout_constraintTop_toBottomOf="@id/reg3_bodyText"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/reg3_endImage"
+            android:layout_width="120dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/endomorph"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg3_bodyText"
+            tools:ignore="ContentDescription" />
+
+        <RadioGroup
+            android:id="@+id/reg3_radioGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reg3_mesoImage">
+
+            <RadioButton
+                android:id="@+id/reg3_radioEcto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ectomorph"
+                android:textColor="#ffffff" />
+
+            <RadioButton
+                android:id="@+id/reg3_radioMeso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/mesomorph"
+                android:textColor="#ffffff" />
+
+            <RadioButton
+                android:id="@+id/reg3_radioEndo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/endomorph"
+                android:textColor="#ffffff" />
+        </RadioGroup>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg3_genderTextlayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/reg3_heightlayout"
+            app:layout_constraintEnd_toEndOf="@+id/reg3_agelayout"
+            app:layout_constraintStart_toStartOf="@+id/reg3_agelayout"
+            app:layout_constraintTop_toTopOf="@+id/reg3_heightlayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg3_genderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/gender"
+                android:inputType="number"
+                android:padding="5dp"
+                android:focusable="false"
+                android:textSize="20dp"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--<TextView
+            android:id="@+id/reg3_genderText"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            android:text="@string/gender"
+            android:gravity="center"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/reg3_heightlayout"
+            app:layout_constraintEnd_toEndOf="@+id/reg3_agelayout"
+            app:layout_constraintStart_toStartOf="@+id/reg3_agelayout"
+            app:layout_constraintTop_toTopOf="@+id/reg3_heightlayout" />
+-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/reg3_btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="90dp"
+        android:layout_marginEnd="90dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/login_button_layout"
+        android:text="@string/submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

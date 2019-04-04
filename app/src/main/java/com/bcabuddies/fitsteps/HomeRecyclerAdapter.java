@@ -2,8 +2,8 @@ package com.bcabuddies.fitsteps;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,18 +74,13 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
                     viewHolder.setCalories(cal);
                     viewHolder.setSteps(step);
                     viewHolder.setTime_stamp(nowMMDDYYYY);
-
                 }
             }
         });
-
-
         Log.e("recyclertest", "homepostid on adapter: " + homePostId);
         Log.e("recyclertest", "homedatauserid: " + homeDataUserId);
         Log.e("recyclertest", "fullname ");
         Log.e("recyclertest", "distance:  " + distance);
-
-
     }
 
     @Override
@@ -114,7 +109,6 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             time_stamp = mView.findViewById(R.id.homerow_time);
             steps=mView.findViewById(R.id.homerow_steps);
             calories=mView.findViewById(R.id.homerow_cal);
-
         }
 
 
