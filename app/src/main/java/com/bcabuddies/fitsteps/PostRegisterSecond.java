@@ -32,6 +32,7 @@ public class PostRegisterSecond extends AppCompatActivity {
     private String uid;
     private FirebaseFirestore firebaseFirestore;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,64 +75,53 @@ public class PostRegisterSecond extends AppCompatActivity {
         });
 
 
-        genderET.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("gender", "onClick: ");
-                final PopupMenu genderMenu = new PopupMenu(PostRegisterSecond.this, genderET);
-                genderMenu.getMenuInflater().inflate(R.menu.gender_menu, genderMenu.getMenu());
-                genderMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.gender_male:
-                                gender = "Male";
-                                genderET.getEditText().setText("Male");
-                                break;
-                            case R.id.gender_female:
-                                gender = "Female";
-                                genderET.getEditText().setText("Female");
-                                break;
-                        }
+        genderET.setOnClickListener(v -> {
+            Log.e("gender", "onClick: ");
+            final PopupMenu genderMenu = new PopupMenu(PostRegisterSecond.this, genderET);
+            genderMenu.getMenuInflater().inflate(R.menu.gender_menu, genderMenu.getMenu());
+            genderMenu.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.gender_male:
+                        gender = "Male";
+                        genderET.getEditText().setText("Male");
+                        break;
+                    case R.id.gender_female:
+                        gender = "Female";
+                        genderET.getEditText().setText("Female");
+                        break;
+                }
 
-                        return true;
-                    }
-                });
-                genderMenu.show();
-            }
+                return true;
+            });
+            genderMenu.show();
         });
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                age = ageET.getEditText().getText().toString();
-                weight = weightET.getEditText().getText().toString();
-                height = heightET.getEditText().getText().toString();
-                gender=genderET.getEditText().getText().toString();
+        submit.setOnClickListener(v -> {
+            age = ageET.getEditText().getText().toString();
+            weight = weightET.getEditText().getText().toString();
+            height = heightET.getEditText().getText().toString();
+            gender=genderET.getEditText().getText().toString();
+            body = "Endomorph";
+            if (ecto.isChecked())
+                body = "Ectomorph";
+            if (meso.isChecked())
+                body = "Mesomorph";
+            if (endo.isChecked())
                 body = "Endomorph";
-                if (ecto.isChecked())
-                    body = "Ectomorph";
-                if (meso.isChecked())
-                    body = "Mesomorph";
-                if (endo.isChecked())
-                    body = "Endomorph";
-                if (age.isEmpty() || weight.isEmpty() || gender.isEmpty() || height.isEmpty()) {
-                    Toast.makeText(PostRegisterSecond.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            if (age.isEmpty() || weight.isEmpty() || gender.isEmpty() || height.isEmpty()) {
+                Toast.makeText(PostRegisterSecond.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            } else {
+                if (body.isEmpty() || body.equals("")) {
+                    Toast.makeText(PostRegisterSecond.this, "Please select body type", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (body.isEmpty() || body.equals("")) {
-                        Toast.makeText(PostRegisterSecond.this, "Please select body type", Toast.LENGTH_SHORT).show();
-                    } else {
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("age", age);
-                        map.put("weight", weight);
-                        map.put("gender", gender);
-                        map.put("height", height);
-                        map.put("body", body);
-                        firebaseFirestore.collection("Users").document(uid).collection("user_data").document(uid)
-                                .set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("age", age);
+                    map.put("weight", weight);
+                    map.put("gender", gender);
+                    map.put("height", height);
+                    map.put("body", body);
+                    firebaseFirestore.collection("Users").document(uid).collection("user_data").document(uid)
+                            .set(map).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(PostRegisterSecond.this, "Details updated", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(PostRegisterSecond.this, Home.class);
@@ -140,9 +130,7 @@ public class PostRegisterSecond extends AppCompatActivity {
                                 } else {
                                     Toast.makeText(PostRegisterSecond.this, "Some error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                        });
-                    }
+                            });
                 }
             }
         });

@@ -70,49 +70,38 @@ public class PostRegisterFirst extends AppCompatActivity {
             Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/fitsteps-311ed.appspot.com/o/default_user_thumb%2Fdefault.png?alt=media&token=c2de219c-9430-48bf-84c1-b2ba0b37be66").into(thumbImage);
         }
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                name = fullName.getEditText().getText().toString();
-                if (name.isEmpty()) {
-                    Toast.makeText(PostRegisterFirst.this, "Please Enter your name ", Toast.LENGTH_SHORT).show();
-                } else if (thumb_downloadUrl == null) {
-                    if (!(profUrl == null)) {
-                        thumb_downloadUrl = thumb_downloadUrl.parse(profUrl);
-                    } else {
-                        thumb_downloadUrl = thumb_downloadUrl.parse("https://firebasestorage.googleapis.com/v0/b/fitsteps-311ed.appspot.com/o/default_user_thumb%2Fdefault.png?alt=media&token=c2de219c-9430-48bf-84c1-b2ba0b37be66");
-                    }
-                    // Toast.makeText(PostRegisterFirst.this, "Please upload a profile picture", Toast.LENGTH_SHORT).show();
+        btnNext.setOnClickListener(v -> {
+            name = fullName.getEditText().getText().toString();
+            if (name.isEmpty()) {
+                Toast.makeText(PostRegisterFirst.this, "Please Enter your name ", Toast.LENGTH_SHORT).show();
+            } else if (thumb_downloadUrl == null) {
+                if (!(profUrl == null)) {
+                    thumb_downloadUrl = Uri.parse(profUrl);
                 } else {
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put("name", name);
-                    map.put("thumb_id", thumb_downloadUrl.toString());
-                    Log.e(TAG, "onClick: thumburll:" + thumb_downloadUrl.toString());
-                    try {
-                        firebaseFirestore.collection("Users").document(userId).set(map)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            startActivity(new Intent(PostRegisterFirst.this, PostRegisterSecond.class));
-                                        } else {
-                                            Toast.makeText(PostRegisterFirst.this, "some error " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("nameError", "onClick: error " + e.getMessage());
-                    }
+                    thumb_downloadUrl = Uri.parse("https://firebasestorage.googleapis.com/v0/b/fitsteps-311ed.appspot.com/o/default_user_thumb%2Fdefault.png?alt=media&token=c2de219c-9430-48bf-84c1-b2ba0b37be66");
+                }
+                // Toast.makeText(PostRegisterFirst.this, "Please upload a profile picture", Toast.LENGTH_SHORT).show();
+            } else {
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("name", name);
+                map.put("thumb_id", thumb_downloadUrl.toString());
+                Log.e(TAG, "onClick: thumburll:" + thumb_downloadUrl.toString());
+                try {
+                    firebaseFirestore.collection("Users").document(userId).set(map)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    startActivity(new Intent(PostRegisterFirst.this, PostRegisterSecond.class));
+                                } else {
+                                    Toast.makeText(PostRegisterFirst.this, "some error " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("nameError", "onClick: error " + e.getMessage());
                 }
             }
         });
-        thumbImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImagePicker();
-            }
-        });
+        thumbImage.setOnClickListener(v -> ImagePicker());
     }
 
     private void initView() {
@@ -155,13 +144,18 @@ public class PostRegisterFirst extends AppCompatActivity {
                 progressDialog.setMessage("Please wait...");
                 progressDialog.show();
                 progressDialog.setCanceledOnTouchOutside(false);
-                thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        thumb_downloadUrl = (Uri) Uri.parse(String.valueOf(taskSnapshot.getMetadata().getReference().getDownloadUrl()));
-                        Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
-                        thumbImage.setImageURI(mainImageUri);
-                        progressDialog.dismiss();
+                thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(taskSnapshot -> {
+                    try {
+                        thumb_filePath.getDownloadUrl().addOnSuccessListener(Uri ->{
+                            Log.e(TAG, "onActivityResult: Uri "+Uri );
+                            thumb_downloadUrl = Uri;
+                            Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
+                            thumbImage.setImageURI(mainImageUri);
+                            progressDialog.dismiss();
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "onActivityResult: exception download uri " );
                     }
                 });
             }

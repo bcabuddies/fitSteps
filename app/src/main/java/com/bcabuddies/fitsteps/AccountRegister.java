@@ -35,27 +35,21 @@ public class AccountRegister extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                email = userEmail.getText().toString();
-                password = userPass.getText().toString();
-                confirmPass = userCpass.getText().toString();
+        btnSubmit.setOnClickListener(v -> {
+            email = userEmail.getText().toString();
+            password = userPass.getText().toString();
+            confirmPass = userCpass.getText().toString();
 
-                if (email.equals("") || password.equals("")) {
-                    Toast.makeText(AccountRegister.this, "Please. fill all info", Toast.LENGTH_SHORT).show();
+            if (email.equals("") || password.equals("")) {
+                Toast.makeText(AccountRegister.this, "Please. fill all info", Toast.LENGTH_SHORT).show();
+            } else {
+                if (password.equals(confirmPass)) {
+                    auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(authResult -> {
+                        Toast.makeText(AccountRegister.this, "User created successfully", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(AccountRegister.this,PostRegisterFirst.class));
+                    });
                 } else {
-                    if (password.equals(confirmPass)) {
-                        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                Toast.makeText(AccountRegister.this, "User created successfully", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(AccountRegister.this,PostRegisterFirst.class));
-                            }
-                        });
-                    } else {
-                        Toast.makeText(AccountRegister.this, "Password did not match", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(AccountRegister.this, "Password did not match", Toast.LENGTH_SHORT).show();
                 }
             }
         });

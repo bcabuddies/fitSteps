@@ -72,84 +72,63 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         recyclerView.setAdapter(homeRecyclerAdapter);
 
 
-        runBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home.this,Steps.class));
-            }
-        });
+        runBtn.setOnClickListener(v -> startActivity(new Intent(Home.this,Steps.class)));
 
         //side nav bar
-        toogleNavigation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sideDrawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
+        toogleNavigation.setOnClickListener(v -> sideDrawerLayout.openDrawer(Gravity.LEFT));
 
         //loading thumb image and full name in side navbar
-        firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
+        firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(task -> {
+            if (task.getResult().exists()) {
 
-                    thumbUrl = task.getResult().getString("thumb_id");
-                    fullName = task.getResult().getString("name");
-                    // name.setText(fullName);
-                    thumb_image = findViewById(R.id.homeNav_thumbImage);
-                    name = findViewById(R.id.homeNav_name);
-                    Log.e("dpname", "onComplete: thumb: " + thumbUrl + "\n name: " + fullName);
-                    try {
-                        Log.e("dpname", "try");
-                        name.setText(fullName);
-                        Glide.with(getApplicationContext()).load(thumbUrl).into(thumb_image);
-                    } catch (Exception e) {
-                        Log.e("dpname", "catch");
-                    }
-                } else {
-                    Toast.makeText(Home.this, "user not exist", Toast.LENGTH_SHORT).show();
+                thumbUrl = task.getResult().getString("thumb_id");
+                fullName = task.getResult().getString("name");
+                // name.setText(fullName);
+                thumb_image = findViewById(R.id.homeNav_thumbImage);
+                name = findViewById(R.id.homeNav_name);
+                Log.e("dpname", "onComplete: thumb: " + thumbUrl + "\n name: " + fullName);
+                try {
+                    Log.e("dpname", "try");
+                    name.setText(fullName);
+                    Glide.with(getApplicationContext()).load(thumbUrl).into(thumb_image);
+                } catch (Exception e) {
+                    Log.e("dpname", "catch");
                 }
+            } else {
+                Toast.makeText(Home.this, "user not exist", Toast.LENGTH_SHORT).show();
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(Home.this, "Some error has occured", Toast.LENGTH_SHORT).show();
-            }
-        });
+        }).addOnFailureListener(e -> Toast.makeText(Home.this, "Some error has occured", Toast.LENGTH_SHORT).show());
 
 
         //home recyclerview data
         Query firstQuery = firebaseFirestore.collection("RunData")
                 .orderBy("time", Query.Direction.DESCENDING).whereEqualTo("uid",auth.getCurrentUser().getUid().toString());
         try {
-            firstQuery.addSnapshotListener(Home.this, new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                    try {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            for (final DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                                if (documentChange.getType() == DocumentChange.Type.ADDED) {
+            firstQuery.addSnapshotListener(Home.this, (queryDocumentSnapshots, e) -> {
+                try {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (final DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                            if (documentChange.getType() == DocumentChange.Type.ADDED) {
 
-                                    String homePostId = documentChange.getDocument().getId();
-                                    Log.e("recyclertest", "homepostid: " + homePostId);
-                                    final HomeData homeData = documentChange.getDocument().toObject(HomeData.class).withID(homePostId);
-                                    homeDataList.add(homeData);
+                                String homePostId = documentChange.getDocument().getId();
+                                Log.e("recyclertest", "homepostid: " + homePostId);
+                                final HomeData homeData = documentChange.getDocument().toObject(HomeData.class).withID(homePostId);
+                                homeDataList.add(homeData);
 
-                                    Log.e("recyclertest", "onEvent: homedatalist " + homeDataList);
-                                    Log.e("recyclertest", "onEvent: homedata " + homeData);
-                                    homeRecyclerAdapter.notifyDataSetChanged();
-                                }
+                                Log.e("recyclertest", "onEvent: homedatalist " + homeDataList);
+                                Log.e("recyclertest", "onEvent: homedata " + homeData);
+                                homeRecyclerAdapter.notifyDataSetChanged();
                             }
-                        } else {
-                            Log.e("mytest1", "onEvent: no data ");
-                            Toast.makeText(Home.this, "No data", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        Log.e("mytest2", "onEvent: exception " + e1.getMessage());
+                    } else {
+                        Log.e("mytest1", "onEvent: no data ");
+                        Toast.makeText(Home.this, "No data", Toast.LENGTH_SHORT).show();
                     }
-
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    Log.e("mytest2", "onEvent: exception " + e1.getMessage());
                 }
+
             });
         } catch (Exception e) {
             e.printStackTrace();

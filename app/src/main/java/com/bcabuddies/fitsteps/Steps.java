@@ -1,5 +1,6 @@
 package com.bcabuddies.fitsteps;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -42,7 +43,9 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
     Double caloriesBurnedPerMile, strip, stepCountMile, conversationFactor, distance;
     Integer caloriesBurned;
     SharedPreferences.Editor editor;
+    private static final String TAG = "Steps.java";
 
+    @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,50 +61,47 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         editor = getSharedPreferences("my_pref", MODE_PRIVATE).edit();
 
-        firebaseFirestore.collection("Users").document(userId).collection("user_data").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
-                    userWeight = Double.valueOf(task.getResult().getString("weight"));
-                    userHeight = Double.valueOf(task.getResult().getString("height"));
-                }
+        firebaseFirestore.collection("Users").document(userId).collection("user_data").document(userId).get().addOnCompleteListener(task -> {
+            if (task.getResult().exists()) {
+                userWeight = Double.valueOf(task.getResult().getString("weight"));
+                userHeight = Double.valueOf(task.getResult().getString("height"));
             }
         });
 
 
-        btnFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnFinish.setOnClickListener(v -> {
 
-                editor.putInt("steps_value", 0);
-                editor.apply();
-                stepsCount.setText("0");
-                Map<String, Object> map = new HashMap<>();
-                map.put("steps", stepsValue.toString());
-                map.put("calories", caloriesBurned.toString());
-                map.put("distance", String.format("%.2f", distance) + " Km");
-                map.put("time", FieldValue.serverTimestamp());
-                map.put("uid", userId);
-                firebaseFirestore.collection("RunData").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        Toast.makeText(Steps.this, "Finished Successfully", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Steps.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            editor.putInt("steps_value", 0);
+            editor.apply();
+            stepsCount.setText("0");
+            Map<String, Object> map = new HashMap<>();
+            map.put("steps", stepsValue.toString());
+            map.put("calories", caloriesBurned.toString());
+            map.put("distance", String.format("%.2f", distance) + " Km");
+            map.put("time", FieldValue.serverTimestamp());
+            map.put("uid", userId);
+            firebaseFirestore.collection("RunData").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentReference> task) {
+                    Log.e(TAG, "onComplete: Data uploaded to firebase " );
+                    Toast.makeText(Steps.this, "Finished Successfully", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e(TAG, "onFailure: data failed to update on firebase " );
+                    Toast.makeText(Steps.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
+                }
+            });
 
-                // stepsCount.setText("0");
-            }
+            // stepsCount.setText("0");
         });
 
 
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onResume() {
         super.onResume();
@@ -126,6 +126,7 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         //sensorManager.unregisterListener(this);
     }
 
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (running) {
