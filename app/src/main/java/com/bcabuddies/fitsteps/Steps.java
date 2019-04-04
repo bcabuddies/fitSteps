@@ -13,18 +13,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Steps extends AppCompatActivity implements SensorEventListener {
@@ -54,19 +50,18 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         btnFinish = findViewById(R.id.btn_finish);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        userId = firebaseAuth.getCurrentUser().getUid();
+        userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         calBurned = findViewById(R.id.tv_calories);
         distCovered = findViewById(R.id.tv_distance);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         editor = getSharedPreferences("my_pref", MODE_PRIVATE).edit();
 
         firebaseFirestore.collection("Users").document(userId).collection("user_data").document(userId).get().addOnCompleteListener(task -> {
-            if (task.getResult().exists()) {
-                userWeight = Double.valueOf(task.getResult().getString("weight"));
-                userHeight = Double.valueOf(task.getResult().getString("height"));
+            if (Objects.requireNonNull(task.getResult()).exists()) {
+                userWeight = Double.valueOf(Objects.requireNonNull(task.getResult().getString("weight")));
+                userHeight = Double.valueOf(Objects.requireNonNull(task.getResult().getString("height")));
             }
         });
-
 
         btnFinish.setOnClickListener(v -> {
 
@@ -79,18 +74,12 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
             map.put("distance", String.format("%.2f", distance) + " Km");
             map.put("time", FieldValue.serverTimestamp());
             map.put("uid", userId);
-            firebaseFirestore.collection("RunData").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentReference> task) {
-                    Log.e(TAG, "onComplete: Data uploaded to firebase ");
-                    Toast.makeText(Steps.this, "Finished Successfully", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e(TAG, "onFailure: data failed to update on firebase ");
-                    Toast.makeText(Steps.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
-                }
+            firebaseFirestore.collection("RunData").add(map).addOnCompleteListener(task -> {
+                Log.e(TAG, "onComplete: Data uploaded to firebase ");
+                Toast.makeText(Steps.this, "Finished Successfully", Toast.LENGTH_SHORT).show();
+            }).addOnFailureListener(e -> {
+                Log.e(TAG, "onFailure: data failed to update on firebase ");
+                Toast.makeText(Steps.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
             });
 
             // stepsCount.setText("0");
@@ -98,7 +87,6 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
 
 
     }
-
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -116,7 +104,6 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
         Log.e("my_prefs", "onResume: " + prefs.getInt("steps_value", 0));
         stepsCount.setText(stepsValue.toString());
     }
-
 
     @Override
     protected void onPause() {

@@ -7,18 +7,17 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AccountRegister extends AppCompatActivity {
 
 
-    private TextInputEditText userEmail, userPass, userCpass;
-    private Button btnSubmit;
+    private TextInputEditText userEmail, userPass, userCPass;
     private FirebaseAuth auth;
     private String email, password, confirmPass;
-    private FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +26,14 @@ public class AccountRegister extends AppCompatActivity {
 
         userEmail = findViewById(R.id.regiter_emailEditText);
         userPass = findViewById(R.id.register_passEditText);
-        userCpass = findViewById(R.id.register_CpassEditText);
-        btnSubmit = findViewById(R.id.register_btnSubmit);
+        userCPass = findViewById(R.id.register_CpassEditText);
+        Button btnSubmit = findViewById(R.id.register_btnSubmit);
         auth = FirebaseAuth.getInstance();
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
         btnSubmit.setOnClickListener(v -> {
-            email = userEmail.getText().toString();
-            password = userPass.getText().toString();
-            confirmPass = userCpass.getText().toString();
+            email = Objects.requireNonNull(userEmail.getText()).toString();
+            password = Objects.requireNonNull(userPass.getText()).toString();
+            confirmPass = Objects.requireNonNull(userCPass.getText()).toString();
 
             if (email.equals("") || password.equals("")) {
                 Toast.makeText(AccountRegister.this, "Please. fill all info", Toast.LENGTH_SHORT).show();

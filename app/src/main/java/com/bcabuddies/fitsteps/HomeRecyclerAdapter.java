@@ -9,15 +9,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,10 +22,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.ViewHolder> {
 
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
     private FirebaseFirestore firebaseFirestore;
-    private FirebaseAuth auth;
-    private String userId;
     private ArrayList<HomeData> homeDataList;
 
     public HomeRecyclerAdapter(ArrayList<HomeData> homeDataList) {
@@ -41,8 +37,6 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.home_row, viewGroup, false);
         context = viewGroup.getContext();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-        userId = auth.getCurrentUser().getUid();
 
         return new ViewHolder(view);
     }
@@ -63,7 +57,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
 
         firebaseFirestore.collection("Users").document(homeDataUserId).get().addOnCompleteListener(task -> {
-            if (task.getResult().exists()) {
+            if (Objects.requireNonNull(task.getResult()).exists()) {
                 String thumb_url = task.getResult().getString("thumb_id");
                 String fullName = task.getResult().getString("name");
                 viewHolder.setThumb_image(thumb_url);

@@ -68,7 +68,7 @@ public class Welcome extends AppCompatActivity {
         mAuthListener = firebaseAuth -> {
 
             if (firebaseAuth.getCurrentUser() != null) {
-                Log.e("checkey", "Main onAuthStateChanged: ");
+                Log.e("checkKey", "Main onAuthStateChanged: ");
                 startActivity(new Intent(Welcome.this, Home.class));
                 finish();
             }
