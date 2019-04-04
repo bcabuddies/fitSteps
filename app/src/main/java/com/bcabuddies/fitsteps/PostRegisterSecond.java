@@ -3,25 +3,21 @@ package com.bcabuddies.fitsteps;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Objects;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PostRegisterSecond extends AppCompatActivity {
 
@@ -41,36 +37,34 @@ public class PostRegisterSecond extends AppCompatActivity {
         initView();
 
         //retrieving preData
-        firebaseFirestore.collection("Users").document(uid).collection("user_data").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
-                    String age, weight, gender, height, body;
-                    age = task.getResult().getString("age");
-                    ageET.getEditText().setText(age);
-                    weight = task.getResult().getString("weight");
-                    weightET.getEditText().setText(weight);
-                    gender = task.getResult().getString("gender");
-                    genderET.getEditText().setText(gender);
-                    height = task.getResult().getString("height");
-                    heightET.getEditText().setText(height);
-                    body = task.getResult().getString("body");
-                    if (body.equals("Mesomorph")) {
-                        meso.setChecked(true);
-                    }
-                    if (body.equals("Ectomorph")) {
-                        ecto.setChecked(true);
-                    }
-                    if (body.equals("Endomorph")) {
-                        endo.setChecked(true);
-                    }
-                } else {
-                    ageET.getEditText().setText("");
-                    weightET.getEditText().setText("");
-                    genderET.getEditText().setText("Gender");
-                    heightET.getEditText().setText("");
+        firebaseFirestore.collection("Users").document(uid).collection("user_data").document(uid).get().addOnCompleteListener(task -> {
+            if (Objects.requireNonNull(task.getResult()).exists()) {
+                String age, weight, gender, height, body;
+                age = task.getResult().getString("age");
+                Objects.requireNonNull(ageET.getEditText()).setText(age);
+                weight = task.getResult().getString("weight");
+                Objects.requireNonNull(weightET.getEditText()).setText(weight);
+                gender = task.getResult().getString("gender");
+                Objects.requireNonNull(genderET.getEditText()).setText(gender);
+                height = task.getResult().getString("height");
+                Objects.requireNonNull(heightET.getEditText()).setText(height);
+                body = task.getResult().getString("body");
+                assert body != null;
+                if (body.equals("Mesomorph")) {
                     meso.setChecked(true);
                 }
+                if (body.equals("Ectomorph")) {
+                    ecto.setChecked(true);
+                }
+                if (body.equals("Endomorph")) {
+                    endo.setChecked(true);
+                }
+            } else {
+                Objects.requireNonNull(ageET.getEditText()).setText("");
+                Objects.requireNonNull(weightET.getEditText()).setText("");
+                Objects.requireNonNull(genderET.getEditText()).setText("Gender");
+                Objects.requireNonNull(heightET.getEditText()).setText("");
+                meso.setChecked(true);
             }
         });
 
@@ -83,11 +77,11 @@ public class PostRegisterSecond extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.gender_male:
                         gender = "Male";
-                        genderET.getEditText().setText("Male");
+                        Objects.requireNonNull(genderET.getEditText()).setText("Male");
                         break;
                     case R.id.gender_female:
                         gender = "Female";
-                        genderET.getEditText().setText("Female");
+                        Objects.requireNonNull(genderET.getEditText()).setText("Female");
                         break;
                 }
 
@@ -97,10 +91,10 @@ public class PostRegisterSecond extends AppCompatActivity {
         });
 
         submit.setOnClickListener(v -> {
-            age = ageET.getEditText().getText().toString();
-            weight = weightET.getEditText().getText().toString();
-            height = heightET.getEditText().getText().toString();
-            gender=genderET.getEditText().getText().toString();
+            age = Objects.requireNonNull(ageET.getEditText()).getText().toString();
+            weight = Objects.requireNonNull(weightET.getEditText()).getText().toString();
+            height = Objects.requireNonNull(heightET.getEditText()).getText().toString();
+            gender = Objects.requireNonNull(genderET.getEditText()).getText().toString();
             body = "Endomorph";
             if (ecto.isChecked())
                 body = "Ectomorph";
@@ -111,7 +105,7 @@ public class PostRegisterSecond extends AppCompatActivity {
             if (age.isEmpty() || weight.isEmpty() || gender.isEmpty() || height.isEmpty()) {
                 Toast.makeText(PostRegisterSecond.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
             } else {
-                if (body.isEmpty() || body.equals("")) {
+                if (body.isEmpty()) {
                     Toast.makeText(PostRegisterSecond.this, "Please select body type", Toast.LENGTH_SHORT).show();
                 } else {
                     HashMap<String, Object> map = new HashMap<>();
@@ -122,15 +116,15 @@ public class PostRegisterSecond extends AppCompatActivity {
                     map.put("body", body);
                     firebaseFirestore.collection("Users").document(uid).collection("user_data").document(uid)
                             .set(map).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(PostRegisterSecond.this, "Details updated", Toast.LENGTH_SHORT).show();
-                                    Intent i = new Intent(PostRegisterSecond.this, Home.class);
-                                    startActivity(i);
-                                    finish();
-                                } else {
-                                    Toast.makeText(PostRegisterSecond.this, "Some error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                        if (task.isSuccessful()) {
+                            Toast.makeText(PostRegisterSecond.this, "Details updated", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(PostRegisterSecond.this, Home.class);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            Toast.makeText(PostRegisterSecond.this, "Some error " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
@@ -149,6 +143,7 @@ public class PostRegisterSecond extends AppCompatActivity {
         submit = findViewById(R.id.reg3_btnSubmit);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
+        assert user != null;
         uid = user.getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
     }

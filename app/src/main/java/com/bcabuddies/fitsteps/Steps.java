@@ -8,10 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,12 +18,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class Steps extends AppCompatActivity implements SensorEventListener {
 
@@ -83,13 +82,13 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
             firebaseFirestore.collection("RunData").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentReference> task) {
-                    Log.e(TAG, "onComplete: Data uploaded to firebase " );
+                    Log.e(TAG, "onComplete: Data uploaded to firebase ");
                     Toast.makeText(Steps.this, "Finished Successfully", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e(TAG, "onFailure: data failed to update on firebase " );
+                    Log.e(TAG, "onFailure: data failed to update on firebase ");
                     Toast.makeText(Steps.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
                 }
             });

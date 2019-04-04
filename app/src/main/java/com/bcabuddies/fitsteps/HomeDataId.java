@@ -1,8 +1,8 @@
 package com.bcabuddies.fitsteps;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.firestore.Exclude;
+
+import androidx.annotation.NonNull;
 
 public class HomeDataId {
 

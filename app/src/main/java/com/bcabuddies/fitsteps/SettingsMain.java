@@ -2,66 +2,48 @@ package com.bcabuddies.fitsteps;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsMain extends AppCompatActivity {
 
-    private TextView profile, basicInfo;
-    private FirebaseAuth auth;
-    private FirebaseFirestore firebaseFirestore;
     String fName, profUrl;
-    private static String TAG = "settingsmain.java";
+    private static String TAG = "settingsMain.java";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_main);
 
-        profile = findViewById(R.id.settings_profile);
-        basicInfo = findViewById(R.id.settings_basic);
-        auth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        TextView profile = findViewById(R.id.settings_profile);
+        TextView basicInfo = findViewById(R.id.settings_basic);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
         //preData
-        firebaseFirestore.collection("Users").document(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
-                    fName = task.getResult().getString("name");
-                    profUrl = task.getResult().getString("thumb_id");
-                    Log.e(TAG, "onComplete: settingsmain: "+fName+" "+profUrl );
+        firebaseFirestore.collection("Users").document(Objects.requireNonNull(auth.getCurrentUser()).getUid()).get().addOnCompleteListener(task -> {
+            if (Objects.requireNonNull(task.getResult()).exists()) {
+                fName = task.getResult().getString("name");
+                profUrl = task.getResult().getString("thumb_id");
+                Log.e(TAG, "onComplete: settingsMain: " + fName + " " + profUrl);
 
-                }
             }
         });
 
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsMain.this, PostRegisterFirst.class);
-                intent.putExtra("name", fName);
-                intent.putExtra("profUrl", profUrl);
-                startActivity(intent);
-            }
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingsMain.this, PostRegisterFirst.class);
+            intent.putExtra("name", fName);
+            intent.putExtra("profUrl", profUrl);
+            startActivity(intent);
         });
 
-        basicInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              startActivity(new Intent(SettingsMain.this,PostRegisterSecond.class));
-            }
-        });
-
-
+        basicInfo.setOnClickListener(v -> startActivity(new Intent(SettingsMain.this, PostRegisterSecond.class)));
     }
 }

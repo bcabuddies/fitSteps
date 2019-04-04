@@ -1,20 +1,17 @@
 package com.bcabuddies.fitsteps;
 
 import android.content.Intent;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class AccountRegister extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
 
+public class AccountRegister extends AppCompatActivity {
 
 
     private TextInputEditText userEmail, userPass, userCpass;
@@ -30,8 +27,8 @@ public class AccountRegister extends AppCompatActivity {
 
         userEmail = findViewById(R.id.regiter_emailEditText);
         userPass = findViewById(R.id.register_passEditText);
-        userCpass =findViewById(R.id.register_CpassEditText);
-        btnSubmit =findViewById(R.id.register_btnSubmit);
+        userCpass = findViewById(R.id.register_CpassEditText);
+        btnSubmit = findViewById(R.id.register_btnSubmit);
         auth = FirebaseAuth.getInstance();
 
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -46,7 +43,7 @@ public class AccountRegister extends AppCompatActivity {
                 if (password.equals(confirmPass)) {
                     auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(authResult -> {
                         Toast.makeText(AccountRegister.this, "User created successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(AccountRegister.this,PostRegisterFirst.class));
+                        startActivity(new Intent(AccountRegister.this, PostRegisterFirst.class));
                     });
                 } else {
                     Toast.makeText(AccountRegister.this, "Password did not match", Toast.LENGTH_SHORT).show();

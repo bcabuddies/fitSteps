@@ -6,20 +6,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -27,7 +22,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -42,7 +36,6 @@ public class PostRegisterFirst extends AppCompatActivity {
     private Uri thumb_downloadUrl = null;
     private StorageReference thumbImgRef;
     private FirebaseFirestore firebaseFirestore;
-    private FirebaseAuth auth;
     private Bitmap thumb_Bitmap = null;
     private Uri mainImageUri = null;
     private static String TAG = "PostRegFirst.java";
@@ -85,7 +78,7 @@ public class PostRegisterFirst extends AppCompatActivity {
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("name", name);
                 map.put("thumb_id", thumb_downloadUrl.toString());
-                Log.e(TAG, "onClick: thumburll:" + thumb_downloadUrl.toString());
+                Log.e(TAG, "onClick: thumbUrl:" + thumb_downloadUrl.toString());
                 try {
                     firebaseFirestore.collection("Users").document(userId).set(map)
                             .addOnCompleteListener(task -> {
@@ -108,10 +101,10 @@ public class PostRegisterFirst extends AppCompatActivity {
         btnNext = findViewById(R.id.register2_btnNext);
         thumbImage = findViewById(R.id.register2_profile);
         fullName = findViewById(R.id.register2_fullNamelayout);
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         thumbImgRef = FirebaseStorage.getInstance().getReference().child("Thumb_images");
         userId = auth.getCurrentUser().getUid();
-        Log.e("userid", "onCreateView: " + userId);
+        Log.e("userId", "onCreateView: " + userId);
         firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
@@ -129,7 +122,7 @@ public class PostRegisterFirst extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 mainImageUri = result.getUri();
-                Log.v("mkeyreg", "mianuri= " + mainImageUri);
+                Log.v("mKeyReg", "mainUri= " + mainImageUri);
                 File thumb_filePathUri = new File(mainImageUri.getPath());
                 try {
                     thumb_Bitmap = new Compressor(this).setMaxWidth(200).setMaxHeight(200).setQuality(50).compressToBitmap(thumb_filePathUri);
@@ -146,8 +139,8 @@ public class PostRegisterFirst extends AppCompatActivity {
                 progressDialog.setCanceledOnTouchOutside(false);
                 thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(taskSnapshot -> {
                     try {
-                        thumb_filePath.getDownloadUrl().addOnSuccessListener(Uri ->{
-                            Log.e(TAG, "onActivityResult: Uri "+Uri );
+                        thumb_filePath.getDownloadUrl().addOnSuccessListener(Uri -> {
+                            Log.e(TAG, "onActivityResult: Uri " + Uri);
                             thumb_downloadUrl = Uri;
                             Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
                             thumbImage.setImageURI(mainImageUri);
@@ -155,7 +148,7 @@ public class PostRegisterFirst extends AppCompatActivity {
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Log.e(TAG, "onActivityResult: exception download uri " );
+                        Log.e(TAG, "onActivityResult: exception download uri ");
                     }
                 });
             }

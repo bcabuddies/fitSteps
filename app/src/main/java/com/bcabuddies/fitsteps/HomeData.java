@@ -2,9 +2,9 @@ package com.bcabuddies.fitsteps;
 
 import java.util.Date;
 
-public class HomeData extends HomeDataId{
+public class HomeData extends HomeDataId {
 
-    private String distance,name,uid,calories,steps;
+    private String distance, name, uid, calories, steps;
     private Date time;
 
     public HomeData() {
