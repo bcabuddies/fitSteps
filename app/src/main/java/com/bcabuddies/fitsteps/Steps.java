@@ -93,6 +93,8 @@ public class Steps extends AppCompatActivity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
         running = true;
+
+        //error here
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if (countSensor != null) {
             sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
