@@ -94,6 +94,22 @@ public class Utils {
             e.printStackTrace();
             Log.e(TAG, "readPendingList: "+e.getMessage() );
         }
+
+        try {
+            //if pendingList not exist
+            String filePath1 = context.getFilesDir().getPath() + "/pendingList.data";
+            File f1 = new File(filePath1);
+
+            FileOutputStream fileOutputStream = new FileOutputStream(f1);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(list);
+            objectOutputStream.close();
+            Log.e(TAG, "saveData: data saved in list " + list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static void readPendingList(Context context) {
