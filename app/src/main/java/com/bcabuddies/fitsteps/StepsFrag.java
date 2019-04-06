@@ -2,6 +2,7 @@ package com.bcabuddies.fitsteps;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,13 +20,17 @@ import android.widget.Toast;
 
 import com.bcabuddies.fitsteps.StepsData.StepDetector;
 import com.bcabuddies.fitsteps.StepsData.StepListener;
+import com.bcabuddies.fitsteps.Utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import androidx.fragment.app.Fragment;
@@ -53,6 +58,7 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
     private FirebaseAuth auth;
     private String userId;
     private HashMap<String, Object> data;
+    private Context context;
 
     public StepsFrag() {
         // Required empty public constructor
@@ -80,6 +86,8 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         calBurned = view.findViewById(R.id.tv_calories);
         distCovered = view.findViewById(R.id.tv_distance);
 
+        context = getContext();
+
         numSteps = 0;
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
@@ -95,15 +103,18 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         btnFinish.setOnClickListener(v -> {
             Log.e(TAG, "onClick: finished");
             unregisterSensor();
-            data.put("time", FieldValue.serverTimestamp());
+
+            Date currentTime = Calendar.getInstance().getTime();
+
+            data.put("time", currentTime);
             data.put("uid", userId);
 
-            finish(data);
+            finishBtn(data);
         });
         return view;
     }
 
-    private void finish(HashMap<String, Object> data) {
+    private void finishBtn(HashMap<String, Object> data) {
         Log.e(TAG, "finish: data " + data);
 
         //check internet
@@ -115,24 +126,11 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
             uploadData(data);
         } else {
             Log.e(TAG, "finish: no internet");
-            saveData(data);
+            //saving data
+            Utils.saveData(data, context);
+            clearData();
         }
 
-    }
-
-    private void saveData(HashMap<String, Object> data) {
-        //save data for later upload
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream("pendingData.data");
-            ObjectOutputStream objectOutputStream= new ObjectOutputStream(fileOutputStream);
-
-            objectOutputStream.writeObject(data);
-            objectOutputStream.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(TAG, "saveData: exception "+e.getMessage() );
-        }
     }
 
     private void uploadData(HashMap<String, Object> data) {
@@ -140,13 +138,21 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         firebaseFirestore.collection("RunData").add(data).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.e(TAG, "uploadData: data uploaded ");
+                clearData();
             } else {
                 Log.e(TAG, "uploadData: error " + task.getException().getMessage());
                 Toast.makeText(getContext(), "Error uploading data", Toast.LENGTH_SHORT).show();
                 //save data for future upload
-                saveData(data);
+                Utils.saveData(data, context);
+                clearData();
             }
         });
+    }
+
+    private void clearData() {
+        Intent i = new Intent(getContext(), StepsMain.class);
+        startActivity(i);
+        getActivity().finish();
     }
 
     private void unregisterSensor() {

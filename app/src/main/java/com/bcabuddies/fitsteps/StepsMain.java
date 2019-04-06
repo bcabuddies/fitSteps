@@ -18,9 +18,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -136,24 +139,31 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
     private void checkDataUpload() {
         //check for pending data upload
         try {
-            FileInputStream fileInputStream  = new FileInputStream("pendingData.data");
+            String filePath = getFilesDir().getPath() + "/pendingList.data";
+            File f = new File(filePath);
+            FileInputStream fileInputStream  = new FileInputStream(f);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-
-            Map pendingData = (HashMap) objectInputStream.readObject();
+            ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+            list.addAll((Collection<? extends HashMap<String, Object>>) objectInputStream.readObject());
             objectInputStream.close();
 
-            Log.e(TAG, "checkDataUpload: data "+pendingData );
+            Log.e(TAG, "checkDataUpload: data "+list );
 
-            if (!pendingData.isEmpty()){
-                firebaseFirestore.collection("RunData").add(pendingData).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.e(TAG, "uploadData: data uploaded ");
-                    } else {
-                        Log.e(TAG, "uploadData: error " + task.getException().getMessage());
-                        Toast.makeText(this, "Error uploading data", Toast.LENGTH_SHORT).show();
-                        //save data for future upload
-                    }
-                });
+            if (!list.isEmpty()){
+                for (HashMap<String, Object> l : list){
+                    firebaseFirestore.collection("RunData").add(l).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.e(TAG, "uploadData: data uploaded ");
+                            String dir = getFilesDir().getPath() + "/pendingList.data";
+                            File file = new File(dir);
+                            if (file.delete()){
+                                Log.e(TAG, "checkDataUpload: backup file deleted " );
+                            }
+                        } else {
+                            Log.e(TAG, "uploadData: error " + task.getException().getMessage());
+                        }
+                    });
+                }
             }
 
         } catch (IOException e) {
