@@ -1,44 +1,94 @@
 package com.bcabuddies.fitsteps;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bcabuddies.fitsteps.StepsData.StepListener;
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-public class StepsMain extends AppCompatActivity  implements SensorEventListener, StepListener {
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class StepsMain extends AppCompatActivity implements SensorEventListener, StepListener {
+
+    private static final String TAG = "stepsmain";
     private Fragment fragment = null;
     BottomNavigationView bottomNavigationView;
+    private DrawerLayout sideDrawerLayout;
+    ImageView toggleNavigation;
+    NavigationView sideNavigationView;
+    private FirebaseAuth auth;
+    FirebaseFirestore firebaseFirestore;
+    private String fullName;
+    private String thumbUrl;
+    private CircleImageView thumb_image;
+    private TextView name;
+    String userId;
+    private TextView toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_main);
 
-        bottomNavigationView=findViewById(R.id.stepsmain_bottomtnavigation);
+
+        bottomNavigationView = findViewById(R.id.stepsmain_bottomtnavigation);
+        sideDrawerLayout = findViewById(R.id.stepsmain_drawer);
+        toggleNavigation = findViewById(R.id.home_toolbar_menuBtn);
+        toggleNavigation = findViewById(R.id.home_toolbar_menuBtn);
+        sideNavigationView = findViewById(R.id.stepsNav_view);
+        toolbarTitle = findViewById(R.id.home_toolbar_titleTV);
+
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        userId = auth.getCurrentUser().getUid();
+
+        toolbarTitle.setText("Activity");
         fragment = StepsFrag.newInstance();
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.stepsmain_frame, fragment);
         fragmentTransaction.commit();
 
+        //side nav bar
+        toggleNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sideDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.stepsmenu_activity:
-                        fragment=StepsFrag.newInstance();
+                        fragment = StepsFrag.newInstance();
+                        toolbarTitle.setText("Activity");
                         break;
                     case R.id.stepsmenu_profile:
-                        fragment=ProfileFrag.newInstance();
+                        fragment = ProfileFrag.newInstance();
+                        toolbarTitle.setText("Profile");
                         break;
                 }
                 FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
@@ -47,6 +97,48 @@ public class StepsMain extends AppCompatActivity  implements SensorEventListener
                 return false;
             }
         });
+
+        sideNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_settings:
+                        startActivity(new Intent(StepsMain.this, SettingsMain.class));
+                        break;
+                    case R.id.menu_logout:
+                        auth.signOut();
+                        startActivity(new Intent(StepsMain.this, Welcome.class));
+                        finish();
+                        break;
+
+                }
+                return true;
+            }
+        });
+
+        //loading thumb image and full name in side navbar
+        firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(task -> {
+            if (Objects.requireNonNull(task.getResult()).exists()) {
+
+                thumbUrl = task.getResult().getString("thumb_id");
+                fullName = task.getResult().getString("name");
+                // name.setText(fullName);
+                thumb_image = findViewById(R.id.homeNav_thumbImage);
+                name = findViewById(R.id.homeNav_name);
+                Log.e(TAG, "onComplete: thumb: " + thumbUrl + "\n name: " + fullName);
+                try {
+                    Log.e(TAG, "try");
+                    name.setText(fullName);
+                    Glide.with(this).load(thumbUrl).into(thumb_image);
+                } catch (Exception e) {
+                    Log.e("dpName", "catch");
+                }
+            } else {
+
+                Toast.makeText(this, "user not exist", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> Toast.makeText(this, "Some error has occured", Toast.LENGTH_SHORT).show());
+
 
     }
 

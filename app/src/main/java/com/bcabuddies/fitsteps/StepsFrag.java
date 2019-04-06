@@ -1,7 +1,6 @@
 package com.bcabuddies.fitsteps;
 
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,6 +15,10 @@ import android.widget.TextView;
 
 import com.bcabuddies.fitsteps.StepsData.StepDetector;
 import com.bcabuddies.fitsteps.StepsData.StepListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 import androidx.fragment.app.Fragment;
 
@@ -36,8 +39,11 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
     Button btnFinish;
     Double caloriesBurnedPerMile, strip, stepCountMile, conversationFactor, distance;
     Integer caloriesBurned;
-    int userWeight = 70, userHeight = 170;
+    double userWeight = 0, userHeight = 0;
     TextView calBurned, distCovered;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    private String userId;
 
 
     public StepsFrag() {
@@ -57,6 +63,9 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         simpleStepDetector = new StepDetector();
         simpleStepDetector.registerListener((StepListener) this);
 
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        userId = auth.getCurrentUser().getUid();
 
         stepsCount = view.findViewById(R.id.tv_steps);
         btnFinish = view.findViewById(R.id.btn_finish);
@@ -66,10 +75,17 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         numSteps = 0;
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
+        firebaseFirestore.collection("Users").document(userId).collection("user_data").document(userId).get().addOnCompleteListener(task -> {
+            if (task.getResult().exists()) {
+                userWeight = Double.valueOf(task.getResult().getString("weight"));
+                userHeight = Double.valueOf(task.getResult().getString("height"));
+            }
+        });
+
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "onClick: finishedd" );
+                Log.e(TAG, "onClick: finishedd");
                 unregisterSensor();
 
             }

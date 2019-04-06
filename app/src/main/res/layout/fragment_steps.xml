@@ -9,14 +9,14 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_finish"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -24,27 +24,11 @@
 
 
                 <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#C4C4C4"
                     android:id="@+id/mview"
-                    app:layout_constraintTop_toBottomOf="@id/tv_today" />
-
-                <TextView
-                    android:id="@+id/tv_today"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="#00F5C271"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="Today"
-                    android:textColor="#020202"
-                    android:textSize="30dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="#C4C4C4"
                     app:layout_constraintTop_toTopOf="parent" />
-
-
 
 
                 <ImageView
@@ -108,7 +92,6 @@
                     android:id="@+id/distance_icon"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="24dp"
                     android:src="@drawable/distance_icon"

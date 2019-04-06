@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -72,6 +74,8 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         Log.e("recyclertest", "homeDataUserId: " + homeDataUserId);
         Log.e("recyclertest", "fullName ");
         Log.e("recyclertest", "distance:  " + distance);
+
+        setAnimation(viewHolder.itemView, i);
     }
 
     @Override
@@ -82,6 +86,12 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     @Override
     public int getItemCount() {
         return homeDataList.size();
+    }
+
+    private void setAnimation(View itemView, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            itemView.startAnimation(animation);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

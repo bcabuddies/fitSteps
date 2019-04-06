@@ -25,7 +25,6 @@
         <activity android:name=".StepsMain"></activity>
         <activity android:name=".PostRegisterSecond" />
         <activity android:name=".PostRegisterFirst" />
-        <activity android:name=".Steps" />
         <activity android:name=".Welcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
