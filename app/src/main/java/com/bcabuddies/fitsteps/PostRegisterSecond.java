@@ -118,7 +118,7 @@ public class PostRegisterSecond extends AppCompatActivity {
                             .set(map).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(PostRegisterSecond.this, "Details updated", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(PostRegisterSecond.this, Home.class);
+                            Intent i = new Intent(PostRegisterSecond.this, StepsMain.class);
                             startActivity(i);
                             finish();
                         } else {

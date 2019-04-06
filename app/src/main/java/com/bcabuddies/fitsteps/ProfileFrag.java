@@ -1,16 +1,23 @@
 package com.bcabuddies.fitsteps;
 
-import android.annotation.SuppressLint;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bcabuddies.fitsteps.HomeData;
+import com.bcabuddies.fitsteps.HomeRecyclerAdapter;
+import com.bcabuddies.fitsteps.R;
+import com.bcabuddies.fitsteps.SettingsMain;
+import com.bcabuddies.fitsteps.Welcome;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,15 +29,18 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ProfileFrag extends Fragment {
 
-    private DrawerLayout sideDrawerLayout;
+    //private DrawerLayout sideDrawerLayout;
     private FirebaseAuth auth;
     private String fullName;
     private String thumbUrl;
@@ -41,32 +51,55 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private String TAG = "Home.java";
 
 
-    @SuppressLint("RtlHardcoded")
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+    public ProfileFrag() {
+        // Required empty public constructor
+    }
 
-        Button runBtn = findViewById(R.id.home_toolbar_runBtn);
-        sideDrawerLayout = findViewById(R.id.home_drawerLayout);
-        ImageView toggleNavigation = findViewById(R.id.home_toolbar_menuBtn);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+
+      //  sideDrawerLayout = view.findViewById(R.id.profile_drawer);
+        ImageView toggleNavigation = view.findViewById(R.id.home_toolbar_menuBtn);
         auth = FirebaseAuth.getInstance();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-        NavigationView navigationView = findViewById(R.id.homeNav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        NavigationView navigationView = view.findViewById(R.id.profileNav_view);
+
+
+
 
         homeDataList = new ArrayList<>();
         homeRecyclerAdapter = new HomeRecyclerAdapter(homeDataList);
-        RecyclerView recyclerView = findViewById(R.id.home_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView recyclerView = view.findViewById(R.id.profile_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(homeRecyclerAdapter);
 
-
-        runBtn.setOnClickListener(v -> startActivity(new Intent(Home.this, Steps.class)));
-
         //side nav bar
-        toggleNavigation.setOnClickListener(v -> sideDrawerLayout.openDrawer(Gravity.LEFT));
+       // toggleNavigation.setOnClickListener(v -> sideDrawerLayout.openDrawer(Gravity.LEFT));
+
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_settings:
+                        startActivity(new Intent(getActivity(), SettingsMain.class));
+                        break;
+                    case R.id.menu_logout:
+                        auth.signOut();
+                        startActivity(new Intent(getActivity(), Welcome.class));
+                        getActivity().finish();
+                        break;
+
+                }
+                return true;
+            }
+        });
 
         //loading thumb image and full name in side navbar
         firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(task -> {
@@ -75,27 +108,27 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 thumbUrl = task.getResult().getString("thumb_id");
                 fullName = task.getResult().getString("name");
                 // name.setText(fullName);
-                thumb_image = findViewById(R.id.homeNav_thumbImage);
-                name = findViewById(R.id.homeNav_name);
+                thumb_image = view.findViewById(R.id.homeNav_thumbImage);
+                name = view.findViewById(R.id.homeNav_name);
                 Log.e(TAG, "onComplete: thumb: " + thumbUrl + "\n name: " + fullName);
                 try {
                     Log.e(TAG, "try");
                     name.setText(fullName);
-                    Glide.with(getApplicationContext()).load(thumbUrl).into(thumb_image);
+                    Glide.with(getActivity()).load(thumbUrl).into(thumb_image);
                 } catch (Exception e) {
                     Log.e("dpName", "catch");
                 }
             } else {
-                Toast.makeText(Home.this, "user not exist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "user not exist", Toast.LENGTH_SHORT).show();
             }
-        }).addOnFailureListener(e -> Toast.makeText(Home.this, "Some error has occured", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> Toast.makeText(getActivity(), "Some error has occured", Toast.LENGTH_SHORT).show());
 
 
         //home recyclerView data
         Query firstQuery = firebaseFirestore.collection("RunData")
                 .orderBy("time", Query.Direction.DESCENDING).whereEqualTo("uid", auth.getCurrentUser().getUid());
         try {
-            firstQuery.addSnapshotListener(Home.this, (queryDocumentSnapshots, e) -> {
+            firstQuery.addSnapshotListener(getActivity(), (queryDocumentSnapshots, e) -> {
                 try {
                     assert queryDocumentSnapshots != null;
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -114,7 +147,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         }
                     } else {
                         Log.e("myTest1", "onEvent: no data ");
-                        Toast.makeText(Home.this, "No data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e1) {
                     e1.printStackTrace();
@@ -128,23 +161,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         }
 
 
+        return view;
+    }
+    public static Fragment newInstance() {
+        ProfileFrag fragment = new ProfileFrag();
+        return fragment;
+
     }
 
-    //side navigation items clicked
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.menu_settings:
-                startActivity(new Intent(Home.this, SettingsMain.class));
-                break;
-            case R.id.menu_logout:
-                auth.signOut();
-                startActivity(new Intent(Home.this, Welcome.class));
-                this.finish();
-                break;
-
-        }
-
-        return true;
-    }
 }

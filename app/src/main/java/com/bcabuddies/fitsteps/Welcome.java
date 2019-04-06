@@ -69,7 +69,7 @@ public class Welcome extends AppCompatActivity {
 
             if (firebaseAuth.getCurrentUser() != null) {
                 Log.e("checkKey", "Main onAuthStateChanged: ");
-                startActivity(new Intent(Welcome.this, Home.class));
+                startActivity(new Intent(Welcome.this, StepsMain.class));
                 finish();
             }
 
@@ -110,7 +110,7 @@ public class Welcome extends AppCompatActivity {
             if (!(email.equals("") || password.equals(""))) {
                 auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(authResult -> {
                     Toast.makeText(Welcome.this, "Successfully Logged in", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Welcome.this, Home.class));
+                    startActivity(new Intent(Welcome.this, StepsMain.class));
                     finish();
                 }).addOnFailureListener(e -> Toast.makeText(Welcome.this, "Incorrect email or password", Toast.LENGTH_SHORT).show());
             } else {

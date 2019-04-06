@@ -1,20 +1,31 @@
 package com.bcabuddies.fitsteps;
 
+
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.bcabuddies.fitsteps.StepsData.StepDetector;
 import com.bcabuddies.fitsteps.StepsData.StepListener;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
-public class Steps extends AppCompatActivity implements SensorEventListener, StepListener {
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class StepsFrag extends Fragment implements SensorEventListener, StepListener {
 
     TextView stepsCount;
     private StepDetector simpleStepDetector;
@@ -25,37 +36,51 @@ public class Steps extends AppCompatActivity implements SensorEventListener, Ste
     Button btnFinish;
     Double caloriesBurnedPerMile, strip, stepCountMile, conversationFactor, distance;
     Integer caloriesBurned;
-    int userWeight=70,userHeight=170;
+    int userWeight = 70, userHeight = 170;
     TextView calBurned, distCovered;
 
+
+    public StepsFrag() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_steps);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_steps, container, false);
 
         // Get an instance of the SensorManager
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager = (SensorManager) getActivity().getSystemService(getActivity().SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         simpleStepDetector = new StepDetector();
-        simpleStepDetector.registerListener(this);
+        simpleStepDetector.registerListener((StepListener) this);
 
-        stepsCount = findViewById(R.id.tv_steps);
-        btnFinish = findViewById(R.id.btn_finish);
-        calBurned = findViewById(R.id.tv_calories);
-        distCovered = findViewById(R.id.tv_distance);
+
+        stepsCount = view.findViewById(R.id.tv_steps);
+        btnFinish = view.findViewById(R.id.btn_finish);
+        calBurned = view.findViewById(R.id.tv_calories);
+        distCovered = view.findViewById(R.id.tv_distance);
 
         numSteps = 0;
-        sensorManager.registerListener(Steps.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sensorManager.unregisterListener(Steps.this);
+                Log.e(TAG, "onClick: finishedd" );
+                unregisterSensor();
+
             }
         });
 
+        return view;
     }
 
+    private void unregisterSensor() {
+        sensorManager.unregisterListener((SensorEventListener) this);
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -82,5 +107,11 @@ public class Steps extends AppCompatActivity implements SensorEventListener, Ste
         calBurned.setText(caloriesBurned.toString() + " cal");
         distance = (numSteps * strip) / 100000;
         distCovered.setText(String.format("%.2f", distance) + " Km");
+    }
+
+    public static Fragment newInstance() {
+        StepsFrag fragment = new StepsFrag();
+        return fragment;
+
     }
 }
