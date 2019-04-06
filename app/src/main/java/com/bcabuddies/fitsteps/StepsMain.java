@@ -7,8 +7,6 @@ import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +18,13 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -70,50 +72,41 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
         fragmentTransaction.commit();
 
         //side nav bar
-        toggleNavigation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sideDrawerLayout.openDrawer(Gravity.LEFT);
+        toggleNavigation.setOnClickListener(v -> sideDrawerLayout.openDrawer(Gravity.LEFT));
+
+        //check pending data upload
+        checkDataUpload();
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.stepsmenu_activity:
+                    fragment = StepsFrag.newInstance();
+                    toolbarTitle.setText("Activity");
+                    break;
+                case R.id.stepsmenu_profile:
+                    fragment = ProfileFrag.newInstance();
+                    toolbarTitle.setText("Profile");
+                    break;
             }
+            FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction2.replace(R.id.stepsmain_frame, fragment);
+            fragmentTransaction2.commit();
+            return false;
         });
 
+        sideNavigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_settings:
+                    startActivity(new Intent(StepsMain.this, SettingsMain.class));
+                    break;
+                case R.id.menu_logout:
+                    auth.signOut();
+                    startActivity(new Intent(StepsMain.this, Welcome.class));
+                    finish();
+                    break;
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.stepsmenu_activity:
-                        fragment = StepsFrag.newInstance();
-                        toolbarTitle.setText("Activity");
-                        break;
-                    case R.id.stepsmenu_profile:
-                        fragment = ProfileFrag.newInstance();
-                        toolbarTitle.setText("Profile");
-                        break;
-                }
-                FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction2.replace(R.id.stepsmain_frame, fragment);
-                fragmentTransaction2.commit();
-                return false;
             }
-        });
-
-        sideNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_settings:
-                        startActivity(new Intent(StepsMain.this, SettingsMain.class));
-                        break;
-                    case R.id.menu_logout:
-                        auth.signOut();
-                        startActivity(new Intent(StepsMain.this, Welcome.class));
-                        finish();
-                        break;
-
-                }
-                return true;
-            }
+            return true;
         });
 
         //loading thumb image and full name in side navbar
@@ -138,8 +131,38 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
                 Toast.makeText(this, "user not exist", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(e -> Toast.makeText(this, "Some error has occured", Toast.LENGTH_SHORT).show());
+    }
 
+    private void checkDataUpload() {
+        //check for pending data upload
+        try {
+            FileInputStream fileInputStream  = new FileInputStream("pendingData.data");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
+            Map pendingData = (HashMap) objectInputStream.readObject();
+            objectInputStream.close();
+
+            Log.e(TAG, "checkDataUpload: data "+pendingData );
+
+            if (!pendingData.isEmpty()){
+                firebaseFirestore.collection("RunData").add(pendingData).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.e(TAG, "uploadData: data uploaded ");
+                    } else {
+                        Log.e(TAG, "uploadData: error " + task.getException().getMessage());
+                        Toast.makeText(this, "Error uploading data", Toast.LENGTH_SHORT).show();
+                        //save data for future upload
+                    }
+                });
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "checkDataUpload: exception "+e.getMessage() );
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            Log.e(TAG, "checkDataUpload: exception "+e.getMessage() );
+        }
     }
 
     @Override
