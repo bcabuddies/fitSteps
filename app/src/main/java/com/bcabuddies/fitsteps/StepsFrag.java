@@ -1,6 +1,7 @@
 package com.bcabuddies.fitsteps;
 
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,20 +24,18 @@ import com.bcabuddies.fitsteps.StepsData.StepDetector;
 import com.bcabuddies.fitsteps.StepsData.StepListener;
 import com.bcabuddies.fitsteps.Utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
+import static com.bcabuddies.fitsteps.App.CHANNEL_1_ID;
 
 
 /**
@@ -48,7 +48,7 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
     private SensorManager sensorManager;
     private Sensor accel;
     private static final String TEXT_NUM_STEPS = "";
-    private int numSteps;
+    private int numSteps = 0;
     Button btnFinish;
     Double caloriesBurnedPerMile, strip, stepCountMile, conversationFactor, distance;
     Integer caloriesBurned;
@@ -59,6 +59,8 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
     private String userId;
     private HashMap<String, Object> data;
     private Context context;
+    private NotificationManagerCompat notificationManager;
+
 
     public StepsFrag() {
         // Required empty public constructor
@@ -68,14 +70,20 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_steps, container, false);
+
 
         // Get an instance of the SensorManager
         sensorManager = (SensorManager) getActivity().getSystemService(getActivity().SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         simpleStepDetector = new StepDetector();
         simpleStepDetector.registerListener(this);
+
+        notificationManager = NotificationManagerCompat.from(getActivity());
+        showNotofication();
+
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -103,15 +111,32 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         btnFinish.setOnClickListener(v -> {
             Log.e(TAG, "onClick: finished");
             unregisterSensor();
-
             Date currentTime = Calendar.getInstance().getTime();
-
             data.put("time", currentTime);
             data.put("uid", userId);
-
             finishBtn(data);
         });
         return view;
+    }
+
+    private void showNotofication() {
+        RemoteViews collapsedView = new RemoteViews(getActivity().getPackageName(),
+                R.layout.notification_collapsed);
+        RemoteViews expandedView = new RemoteViews(getActivity().getPackageName(),
+                R.layout.notification_expanded);
+
+        collapsedView.setTextViewText(R.id.notif_dataTV, "Steps: " + numSteps);
+        expandedView.setTextViewText(R.id.notif_dataTV, "Steps: " + numSteps);
+
+
+        Notification notification = new NotificationCompat.Builder(getActivity(), CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.logo)
+                .setCustomContentView(collapsedView)
+                .setCustomBigContentView(expandedView)
+                .setOnlyAlertOnce(true)
+                .setOngoing(true)
+                .build();
+        notificationManager.notify(1, notification);
     }
 
     private void finishBtn(HashMap<String, Object> data) {
@@ -189,6 +214,13 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         distance = (numSteps * strip) / 100000;
         distCovered.setText(String.format("%.2f", distance) + " Km");
         data.put("distance", String.format("%.2f", distance) + " Km");
+
+        showNotofication();
+
+    }
+
+    public void displayNotification(View view) {
+
     }
 
     public static Fragment newInstance() {

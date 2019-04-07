@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:background="@drawable/steps_back">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="2dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/logo"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fitsteps"
+            android:textSize="20dp"
+
+            style="@style/TextAppearance.Compat.Notification"
+            android:padding="5dp"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_marginLeft="35dp"
+        android:id="@+id/notif_dataTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data"
+        style="@style/TextAppearance.Compat.Notification.Info"
+        android:textSize="20dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/notfexpanded_btnfinish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:padding="5dp"
+            android:layout_margin="10dp"
+            android:text="Finish"
+            android:textSize="15dp"
+            android:background="@drawable/button_gradient"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/notifexpanded_btnexit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Exit"
+            android:background="@drawable/button_gradient"
+            android:textColor="#FFFFFF"
+            android:layout_margin="10dp"
+            android:textSize="15dp"
+            android:padding="5dp"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
