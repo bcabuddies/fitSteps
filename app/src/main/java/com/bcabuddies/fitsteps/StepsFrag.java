@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -62,6 +63,7 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
     private static Context context;
     private NotificationManagerCompat notificationManager;
     private String distanceCovered, calBurn;
+    Boolean finishCheck = true;
 
     public StepsFrag() {
         // Required empty public constructor
@@ -129,16 +131,33 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         collapsedView.setTextViewText(R.id.notif_dataTV, "Stps: " + numSteps + " Cal: " + calBurn + " Km: " + distanceCovered);
         expandedView.setTextViewText(R.id.notif_dataTV, "Steps: " + numSteps + "\nCalories: " + calBurn + "\nDistance: " + distanceCovered);
 
-        /*Intent finishIntent = new Intent(getContext(), StepsMain.class);
-        PendingIntent finish = PendingIntent.getActivity(context, 0, finishIntent, 0);
+        Intent finishButton = new Intent("com.bcabuddies.fitsteps.FINISH_ACTION");
+        IntentFilter intentFilter = new IntentFilter("com.bcabuddies.fitsteps.FINISH_ACTION");
 
-        expandedView.setOnClickPendingIntent(R.id.notfexpanded_btnfinish, finish);*/
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
 
-        Intent finishButton = new Intent("Finished");
-        finishButton.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                if (finishCheck==true) {
+                    Log.e(TAG, "onReceive: finishclick");
+                    unregisterSensor();
+                    Date currentTime = Calendar.getInstance().getTime();
+                    data.put("time", currentTime);
+                    data.put("uid", userId);
+                    finishBtn(data);
+                    finishCheck=false;
+                }
+            }
+        };
 
-        PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, finishButton, 0);
-        expandedView.setOnClickPendingIntent(R.id.notfexpanded_btnfinish, pendingSwitchIntent);
+        getActivity().registerReceiver(broadcastReceiver, intentFilter);
+
+        PendingIntent finishBtnPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, finishButton, 0);
+        expandedView.setOnClickPendingIntent(R.id.notifexpanded_btnfinish, finishBtnPendingIntent);
+
+        Intent exitButton = new Intent(getActivity(), NotificationReciever.class).setAction("com.bcabuddies.fitsteps.CANCEL_ACTION");
+        PendingIntent exitBtnPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, exitButton, 0);
+        expandedView.setOnClickPendingIntent(R.id.notifexpanded_btnexit, exitBtnPendingIntent);
 
         Notification notification = new NotificationCompat.Builder(getActivity(), CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.logo)
@@ -150,12 +169,12 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         notificationManager.notify(1, notification);
     }
 
-    public static class FinishReceiver extends BroadcastReceiver {
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e(TAG, "onReceive: Finish Received ");
+            Log.e(TAG, "onReceive: finishclick");
         }
-    }
+    };
 
     private void finishBtn(HashMap<String, Object> data) {
         Log.e(TAG, "finish: data " + data);

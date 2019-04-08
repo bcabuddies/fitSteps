@@ -17,6 +17,7 @@ public class App extends Application {
         createNotificationChannels();
     }
 
+
     private void createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(

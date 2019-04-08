@@ -72,6 +72,7 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
         fragment = StepsFrag.newInstance();
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.stepsmain_frame, fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
         //side nav bar
@@ -93,6 +94,7 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
             }
             FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
             fragmentTransaction2.replace(R.id.stepsmain_frame, fragment);
+            fragmentTransaction2.addToBackStack(null);
             fragmentTransaction2.commit();
             return false;
         });
