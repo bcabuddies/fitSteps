@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsMain extends AppCompatActivity {
 
-    String fName, profUrl;
+    private String fName, profUrl;
     private static String TAG = "settingsMain.java";
 
     @Override

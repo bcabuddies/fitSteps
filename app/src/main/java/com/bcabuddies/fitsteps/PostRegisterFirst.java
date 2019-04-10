@@ -21,6 +21,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -39,8 +40,7 @@ public class PostRegisterFirst extends AppCompatActivity {
     private Bitmap thumb_Bitmap = null;
     private Uri mainImageUri = null;
     private static String TAG = "PostRegFirst.java";
-    String Fname;
-    String profUrl;
+    private String profUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +50,10 @@ public class PostRegisterFirst extends AppCompatActivity {
         initView();
 
         try {
-            Fname = getIntent().getStringExtra("name");
+            String fname = getIntent().getStringExtra("name");
             profUrl = getIntent().getStringExtra("profUrl");
             Log.e(TAG, "onCreate: preData " + name + "  " + profUrl);
-            fullName.getEditText().setText(Fname);
+            Objects.requireNonNull(fullName.getEditText()).setText(fname);
             Glide.with(this).load(profUrl).into(thumbImage);
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,7 +85,7 @@ public class PostRegisterFirst extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     startActivity(new Intent(PostRegisterFirst.this, PostRegisterSecond.class));
                                 } else {
-                                    Toast.makeText(PostRegisterFirst.this, "some error " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(PostRegisterFirst.this, "some error " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             });
                 } catch (Exception e) {
@@ -103,7 +103,7 @@ public class PostRegisterFirst extends AppCompatActivity {
         fullName = findViewById(R.id.register2_fullNamelayout);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         thumbImgRef = FirebaseStorage.getInstance().getReference().child("Thumb_images");
-        userId = auth.getCurrentUser().getUid();
+        userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         Log.e("userId", "onCreateView: " + userId);
         firebaseFirestore = FirebaseFirestore.getInstance();
     }

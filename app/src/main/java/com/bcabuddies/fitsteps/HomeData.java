@@ -19,7 +19,7 @@ public class HomeData extends HomeDataId {
         this.time = time;
     }
 
-    public String getCalories() {
+    String getCalories() {
         return calories;
     }
 
@@ -27,7 +27,7 @@ public class HomeData extends HomeDataId {
         this.calories = calories;
     }
 
-    public String getSteps() {
+    String getSteps() {
         return steps;
     }
 
@@ -35,7 +35,7 @@ public class HomeData extends HomeDataId {
         this.steps = steps;
     }
 
-    public String getDistance() {
+    String getDistance() {
         return distance;
     }
 
@@ -51,7 +51,7 @@ public class HomeData extends HomeDataId {
         this.name = name;
     }
 
-    public String getUid() {
+    String getUid() {
         return uid;
     }
 
@@ -59,7 +59,7 @@ public class HomeData extends HomeDataId {
         this.uid = uid;
     }
 
-    public Date getTime() {
+    Date getTime() {
         return time;
     }
 

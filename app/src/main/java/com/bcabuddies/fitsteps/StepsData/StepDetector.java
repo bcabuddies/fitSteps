@@ -24,7 +24,6 @@ public class StepDetector {
         this.listener = listener;
     }
 
-
     public void updateAccel(long timeNs, float x, float y, float z) {
         float[] currentAccel = new float[3];
         currentAccel[0] = x;

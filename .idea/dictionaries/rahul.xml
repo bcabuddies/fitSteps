@@ -2,18 +2,25 @@
   <dictionary name="rahul">
     <words>
       <w>accel</w>
+      <w>bcabuddies</w>
+      <w>btnexit</w>
+      <w>btnfinish</w>
       <w>dateformat</w>
       <w>ecto</w>
       <w>ectomorph</w>
       <w>endo</w>
       <w>endomorph</w>
       <w>firebase</w>
+      <w>fitsteps</w>
       <w>fname</w>
       <w>homedatauserid</w>
       <w>homepostid</w>
       <w>meso</w>
       <w>mmddyyyy</w>
       <w>navbar</w>
+      <w>notif</w>
+      <w>notifchannel</w>
+      <w>notifexpanded</w>
       <w>popupmenu</w>
       <w>rahul</w>
       <w>recyclertest</w>

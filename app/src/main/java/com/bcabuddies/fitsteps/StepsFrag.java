@@ -63,7 +63,7 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
     private static Context context;
     private NotificationManagerCompat notificationManager;
     private String distanceCovered, calBurn;
-    Boolean finishCheck = true;
+    private Boolean finishCheck = true;
 
     public StepsFrag() {
         // Required empty public constructor
@@ -87,7 +87,7 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         simpleStepDetector.registerListener(this);
 
         notificationManager = NotificationManagerCompat.from(getActivity());
-        showNotification(context);
+        showNotification();
 
 
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -122,13 +122,13 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         return view;
     }
 
-    private void showNotification(Context context) {
+    private void showNotification() {
         RemoteViews collapsedView = new RemoteViews(Objects.requireNonNull(getActivity()).getPackageName(),
                 R.layout.notification_collapsed);
         RemoteViews expandedView = new RemoteViews(getActivity().getPackageName(),
                 R.layout.notification_expanded);
 
-        collapsedView.setTextViewText(R.id.notif_dataTV, "Stps: " + numSteps + " Cal: " + calBurn + " Km: " + distanceCovered);
+        collapsedView.setTextViewText(R.id.notif_dataTV, "Steps: " + numSteps + " Cal: " + calBurn + " Km: " + distanceCovered);
         expandedView.setTextViewText(R.id.notif_dataTV, "Steps: " + numSteps + "\nCalories: " + calBurn + "\nDistance: " + distanceCovered);
 
         Intent finishButton = new Intent("com.bcabuddies.fitsteps.FINISH_ACTION");
@@ -138,8 +138,8 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (finishCheck==true) {
-                    Log.e(TAG, "onReceive: finishclick");
+                if (finishCheck) {
+                    Log.e(TAG, "onReceive: finishClick");
                     unregisterSensor();
                     Date currentTime = Calendar.getInstance().getTime();
                     data.put("time", currentTime);
@@ -155,7 +155,7 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         PendingIntent finishBtnPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, finishButton, 0);
         expandedView.setOnClickPendingIntent(R.id.notifexpanded_btnfinish, finishBtnPendingIntent);
 
-        Intent exitButton = new Intent(getActivity(), NotificationReciever.class).setAction("com.bcabuddies.fitsteps.CANCEL_ACTION");
+        Intent exitButton = new Intent(getActivity(), notificationReceiver.class).setAction("com.bcabuddies.fitsteps.CANCEL_ACTION");
         PendingIntent exitBtnPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, exitButton, 0);
         expandedView.setOnClickPendingIntent(R.id.notifexpanded_btnexit, exitBtnPendingIntent);
 
@@ -168,13 +168,6 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
                 .build();
         notificationManager.notify(1, notification);
     }
-
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e(TAG, "onReceive: finishclick");
-        }
-    };
 
     private void finishBtn(HashMap<String, Object> data) {
         Log.e(TAG, "finish: data " + data);
@@ -254,14 +247,9 @@ public class StepsFrag extends Fragment implements SensorEventListener, StepList
         data.put("distance", String.format("%.2f", distance) + " Km");
         distanceCovered = String.format("%.2f", distance);
 
-        showNotification(context);
+        showNotification();
 
     }
-
-/*
-    public void displayNotification(View view) {
-
-    }*/
 
     static Fragment newInstance() {
         return new StepsFrag();

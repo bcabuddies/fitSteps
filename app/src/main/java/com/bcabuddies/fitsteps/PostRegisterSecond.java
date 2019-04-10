@@ -23,7 +23,7 @@ public class PostRegisterSecond extends AppCompatActivity {
 
     private TextInputLayout ageET, weightET, heightET, genderET;
     private RadioButton ecto, meso, endo;
-    Button submit;
+    private Button submit;
     private String age = "", weight = "", gender = "", height = "", body = "";
     private String uid;
     private FirebaseFirestore firebaseFirestore;

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">FitSteps</string>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="register_here">Register Here</string>
@@ -20,9 +19,12 @@
     <string name="distance">Distance: 0 Km</string>
     <string name="calories">Calories: 0 Cal</string>
     <string name="steps">Steps: 0 Steps</string>
-    <string name="finish">Finish</string>
     <string name="title_activity_maps">Map</string>
     <string name="name">Name</string>
     <string name="achievement">Achievements\n0</string>
     <string name="total_run">Total Activities\n0</string>
+    <string name="logo">LOGO</string>
+    <string name="data">Data</string>
+    <string name="finish">Finish</string>
+    <string name="exit">Exit</string>
 </resources>

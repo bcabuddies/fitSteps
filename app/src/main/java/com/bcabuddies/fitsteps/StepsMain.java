@@ -1,5 +1,6 @@
 package com.bcabuddies.fitsteps;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -25,7 +26,6 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,37 +36,33 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class StepsMain extends AppCompatActivity implements SensorEventListener, StepListener {
 
-    private static final String TAG = "stepsmain";
+    private static final String TAG = "stepsMain";
     private Fragment fragment = null;
-    BottomNavigationView bottomNavigationView;
     private DrawerLayout sideDrawerLayout;
-    ImageView toggleNavigation;
-    NavigationView sideNavigationView;
     private FirebaseAuth auth;
-    FirebaseFirestore firebaseFirestore;
+    private FirebaseFirestore firebaseFirestore;
     private String fullName;
     private String thumbUrl;
     private CircleImageView thumb_image;
     private TextView name;
-    String userId;
     private TextView toolbarTitle;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_main);
 
 
-        bottomNavigationView = findViewById(R.id.stepsmain_bottomtnavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.stepsmain_bottomtnavigation);
         sideDrawerLayout = findViewById(R.id.stepsmain_drawer);
-        toggleNavigation = findViewById(R.id.home_toolbar_menuBtn);
-        toggleNavigation = findViewById(R.id.home_toolbar_menuBtn);
-        sideNavigationView = findViewById(R.id.stepsNav_view);
+        ImageView toggleNavigation = findViewById(R.id.home_toolbar_menuBtn);
+        NavigationView sideNavigationView = findViewById(R.id.stepsNav_view);
         toolbarTitle = findViewById(R.id.home_toolbar_titleTV);
 
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        userId = auth.getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
         toolbarTitle.setText("Activity");
         fragment = StepsFrag.newInstance();
@@ -135,7 +131,7 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
 
                 Toast.makeText(this, "user not exist", Toast.LENGTH_SHORT).show();
             }
-        }).addOnFailureListener(e -> Toast.makeText(this, "Some error has occured", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> Toast.makeText(this, "Some error has occurred", Toast.LENGTH_SHORT).show());
     }
 
     private void checkDataUpload() {
@@ -143,26 +139,26 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
         try {
             String filePath = getFilesDir().getPath() + "/pendingList.data";
             File f = new File(filePath);
-            FileInputStream fileInputStream  = new FileInputStream(f);
+            FileInputStream fileInputStream = new FileInputStream(f);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             ArrayList<HashMap<String, Object>> list = new ArrayList<>();
             list.addAll((Collection<? extends HashMap<String, Object>>) objectInputStream.readObject());
             objectInputStream.close();
 
-            Log.e(TAG, "checkDataUpload: data "+list );
+            Log.e(TAG, "checkDataUpload: data " + list);
 
-            if (!list.isEmpty()){
-                for (HashMap<String, Object> l : list){
+            if (!list.isEmpty()) {
+                for (HashMap<String, Object> l : list) {
                     firebaseFirestore.collection("RunData").add(l).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.e(TAG, "uploadData: data uploaded ");
                             String dir = getFilesDir().getPath() + "/pendingList.data";
                             File file = new File(dir);
-                            if (file.delete()){
-                                Log.e(TAG, "checkDataUpload: backup file deleted " );
+                            if (file.delete()) {
+                                Log.e(TAG, "checkDataUpload: backup file deleted ");
                             }
                         } else {
-                            Log.e(TAG, "uploadData: error " + task.getException().getMessage());
+                            Log.e(TAG, "uploadData: error " + Objects.requireNonNull(task.getException()).getMessage());
                         }
                     });
                 }
@@ -170,10 +166,10 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG, "checkDataUpload: exception "+e.getMessage() );
+            Log.e(TAG, "checkDataUpload: exception " + e.getMessage());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            Log.e(TAG, "checkDataUpload: exception "+e.getMessage() );
+            Log.e(TAG, "checkDataUpload: exception " + e.getMessage());
         }
     }
 

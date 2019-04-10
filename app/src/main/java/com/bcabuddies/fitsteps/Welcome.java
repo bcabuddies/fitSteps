@@ -33,9 +33,7 @@ public class Welcome extends AppCompatActivity {
 
     private static final String TAG = "Welcome.java";
     private static final int RC_SIGN_IN = 1;
-    TextView txtReg, txtForgotPass;
-    SignInButton googleSignInBtn;
-    String fName, profUrl;
+    private String fName, profUrl;
     private FirebaseAuth auth;
     private String email, password;
     private TextInputEditText userEmail, userPass;
@@ -62,9 +60,9 @@ public class Welcome extends AppCompatActivity {
         userEmail = findViewById(R.id.login_emailEditText);
         userPass = findViewById(R.id.login_passwordEditText);
         btnLogin = findViewById(R.id.login_loginBtn);
-        txtReg = findViewById(R.id.login_register);
-        txtForgotPass = findViewById(R.id.login_forgetPassword);
-        googleSignInBtn = findViewById(R.id.login_googlebtn);
+        TextView txtReg = findViewById(R.id.login_register);
+        TextView txtForgotPass = findViewById(R.id.login_forgetPassword);
+        SignInButton googleSignInBtn = findViewById(R.id.login_googlebtn);
         mAuthListener = firebaseAuth -> {
 
             if (firebaseAuth.getCurrentUser() != null) {

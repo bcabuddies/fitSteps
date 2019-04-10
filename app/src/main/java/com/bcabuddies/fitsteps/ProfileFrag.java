@@ -14,37 +14,33 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFrag extends Fragment {
 
-    //
-    private FirebaseAuth auth;
-
     private ArrayList<HomeData> homeDataList;
     private HomeRecyclerAdapter homeRecyclerAdapter;
-    private String TAG = "Home.java";
-    private CircleImageView thumbImg;
 
     public ProfileFrag() {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        auth = FirebaseAuth.getInstance();
+        //
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
         homeDataList = new ArrayList<>();
@@ -55,9 +51,9 @@ public class ProfileFrag extends Fragment {
 
         //home recyclerView data
         Query firstQuery = firebaseFirestore.collection("RunData")
-                .orderBy("time", Query.Direction.DESCENDING).whereEqualTo("uid", auth.getCurrentUser().getUid());
+                .orderBy("time", Query.Direction.DESCENDING).whereEqualTo("uid", Objects.requireNonNull(auth.getCurrentUser()).getUid());
         try {
-            firstQuery.addSnapshotListener(getActivity(), (queryDocumentSnapshots, e) -> {
+            firstQuery.addSnapshotListener(Objects.requireNonNull(getActivity()), (queryDocumentSnapshots, e) -> {
                 try {
                     assert queryDocumentSnapshots != null;
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -93,10 +89,8 @@ public class ProfileFrag extends Fragment {
         return view;
     }
 
-    public static Fragment newInstance() {
-        ProfileFrag fragment = new ProfileFrag();
-        return fragment;
-
+    static Fragment newInstance() {
+        return new ProfileFrag();
     }
 
 }

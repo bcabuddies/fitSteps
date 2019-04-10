@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:background="@drawable/steps_back">
-
+    android:background="@drawable/steps_back"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:padding="2dp"
             android:layout_margin="5dp"
-            android:src="@drawable/logo"/>
+            android:contentDescription="@string/logo"
+            android:padding="2dp"
+            android:src="@drawable/logo" />
 
         <TextView
+            style="@style/TextAppearance.Compat.Notification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fitsteps"
-            android:textSize="20dp"
-
-            style="@style/TextAppearance.Compat.Notification"
-            android:padding="5dp"/>
-
+            android:padding="5dp"
+            android:text="@string/app_name"
+            android:textSize="20sp" />
     </LinearLayout>
 
-
     <TextView
-        android:layout_marginLeft="35dp"
         android:id="@+id/notif_dataTV"
+        style="@style/TextAppearance.Compat.Notification.Info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data"
-        style="@style/TextAppearance.Compat.Notification.Info"
-        android:textSize="20dp"
-        />
+        android:layout_marginStart="35dp"
+        android:text="@string/data"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,27 +47,26 @@
             android:id="@+id/notifexpanded_btnfinish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:padding="5dp"
             android:layout_margin="10dp"
-            android:text="Finish"
-            android:textSize="15dp"
+            android:layout_weight="0.5"
             android:background="@drawable/button_gradient"
-            android:textColor="#FFFFFF"/>
+            android:padding="5dp"
+            android:text="@string/finish"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/notifexpanded_btnexit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="Exit"
-            android:background="@drawable/button_gradient"
-            android:textColor="#FFFFFF"
             android:layout_margin="10dp"
-            android:textSize="15dp"
-            android:padding="5dp"/>
-
-
+            android:layout_weight="0.5"
+            android:background="@drawable/button_gradient"
+            android:padding="5dp"
+            android:text="@string/exit"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
-
 </LinearLayout>

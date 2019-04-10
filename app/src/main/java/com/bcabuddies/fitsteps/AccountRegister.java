@@ -13,8 +13,6 @@ import java.util.Objects;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AccountRegister extends AppCompatActivity {
-
-
     private TextInputEditText userEmail, userPass, userCPass;
     private FirebaseAuth auth;
     private String email, password, confirmPass;

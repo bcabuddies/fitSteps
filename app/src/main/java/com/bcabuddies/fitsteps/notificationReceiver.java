@@ -7,8 +7,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
 
-public class NotificationReciever extends BroadcastReceiver {
-    private static final String TAG ="notifreciever test" ;
+public class notificationReceiver extends BroadcastReceiver {
+    private static final String TAG ="notifReceiver test" ;
 
     @Override
     public void onReceive(Context context, Intent intent) {

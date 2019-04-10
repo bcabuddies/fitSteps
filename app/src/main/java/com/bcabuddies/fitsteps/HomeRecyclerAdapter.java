@@ -29,7 +29,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     private FirebaseFirestore firebaseFirestore;
     private ArrayList<HomeData> homeDataList;
 
-    public HomeRecyclerAdapter(ArrayList<HomeData> homeDataList) {
+    HomeRecyclerAdapter(ArrayList<HomeData> homeDataList) {
         this.homeDataList = homeDataList;
     }
 
@@ -75,7 +75,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         Log.e("recyclertest", "fullName ");
         Log.e("recyclertest", "distance:  " + distance);
 
-        setAnimation(viewHolder.itemView, i);
+        setAnimation(viewHolder.itemView);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         return homeDataList.size();
     }
 
-    private void setAnimation(View itemView, int position) {
+    private void setAnimation(View itemView) {
         // If the bound view wasn't previously displayed on screen, it's animated
             Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
             itemView.startAnimation(animation);
