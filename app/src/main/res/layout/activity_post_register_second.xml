@@ -21,9 +21,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reg3_cons1"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/reg3_btnSubmit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -114,6 +113,45 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reg3_heightlayout" />
 
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg3_genderTextlayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/reg3_heightlayout"
+            app:layout_constraintEnd_toEndOf="@+id/reg3_agelayout"
+            app:layout_constraintStart_toStartOf="@+id/reg3_agelayout"
+            app:layout_constraintTop_toTopOf="@+id/reg3_heightlayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg3_genderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:focusable="false"
+                android:hint="@string/gender"
+                android:inputType="number"
+                android:padding="5dp"
+                android:textSize="20dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="415dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/reg3_btnSubmit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reg3_cons1">
+
         <ImageView
             android:id="@+id/reg3_ectoImage"
             android:layout_width="120dp"
@@ -122,7 +160,7 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/ectomorph"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reg3_bodyText"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -135,7 +173,7 @@
             android:src="@drawable/mesomorph"
             app:layout_constraintEnd_toStartOf="@+id/reg3_endImage"
             app:layout_constraintStart_toEndOf="@+id/reg3_ectoImage"
-            app:layout_constraintTop_toBottomOf="@id/reg3_bodyText"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -146,19 +184,22 @@
             android:layout_marginEnd="8dp"
             android:src="@drawable/endomorph"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reg3_bodyText"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
         <RadioGroup
             android:id="@+id/reg3_radioGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:orientation="horizontal"
+            android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reg3_mesoImage">
+            app:layout_constraintTop_toBottomOf="@+id/reg3_mesoImage"
+            app:layout_goneMarginEnd="2dp">
 
             <RadioButton
                 android:id="@+id/reg3_radioEcto"
@@ -185,45 +226,6 @@
                 android:textColor="#ffffff" />
         </RadioGroup>
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/reg3_genderTextlayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
-            android:padding="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/reg3_heightlayout"
-            app:layout_constraintEnd_toEndOf="@+id/reg3_agelayout"
-            app:layout_constraintStart_toStartOf="@+id/reg3_agelayout"
-            app:layout_constraintTop_toTopOf="@+id/reg3_heightlayout">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/reg3_genderText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:hint="@string/gender"
-                android:inputType="number"
-                android:padding="5dp"
-                android:focusable="false"
-                android:textSize="20dp"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!--<TextView
-            android:id="@+id/reg3_genderText"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/edittext_background"
-            android:padding="10dp"
-            android:text="@string/gender"
-            android:gravity="center"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/reg3_heightlayout"
-            app:layout_constraintEnd_toEndOf="@+id/reg3_agelayout"
-            app:layout_constraintStart_toStartOf="@+id/reg3_agelayout"
-            app:layout_constraintTop_toTopOf="@+id/reg3_heightlayout" />
--->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -101,6 +102,8 @@ public class StepsMain extends AppCompatActivity implements SensorEventListener,
                     startActivity(new Intent(StepsMain.this, SettingsMain.class));
                     break;
                 case R.id.menu_logout:
+                    NotificationManagerCompat notificationManagerCompat=NotificationManagerCompat.from(this);
+                    notificationManagerCompat.cancel(1);
                     auth.signOut();
                     startActivity(new Intent(StepsMain.this, Welcome.class));
                     finish();
