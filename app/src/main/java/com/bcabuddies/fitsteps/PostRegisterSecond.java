@@ -106,6 +106,7 @@ public class PostRegisterSecond extends AppCompatActivity {
                 Toast.makeText(PostRegisterSecond.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
             } else {
                 if (body.isEmpty()) {
+
                     Toast.makeText(PostRegisterSecond.this, "Please select body type", Toast.LENGTH_SHORT).show();
                 } else {
                     HashMap<String, Object> map = new HashMap<>();

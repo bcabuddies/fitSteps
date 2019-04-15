@@ -66,35 +66,45 @@ public class PostRegisterFirst extends AppCompatActivity {
         btnNext.setOnClickListener(v -> {
             name = fullName.getEditText().getText().toString();
             if (name.isEmpty()) {
+                Log.e(TAG, "onCreate postreg: if" );
                 Toast.makeText(PostRegisterFirst.this, "Please Enter your name ", Toast.LENGTH_SHORT).show();
             } else if (thumb_downloadUrl == null) {
+                Log.e(TAG, "onCreate postreg: else if" );
                 if (!(profUrl == null)) {
+                    Log.e(TAG, "onCreate postreg: else if if" );
                     thumb_downloadUrl = Uri.parse(profUrl);
+                    detailsUpload(name,thumb_downloadUrl);
                 } else {
+                    Log.e(TAG, "onCreate postreg: else if else");
                     thumb_downloadUrl = Uri.parse("https://firebasestorage.googleapis.com/v0/b/fitsteps-311ed.appspot.com/o/default_user_thumb%2Fdefault.png?alt=media&token=c2de219c-9430-48bf-84c1-b2ba0b37be66");
                 }
                 // Toast.makeText(PostRegisterFirst.this, "Please upload a profile picture", Toast.LENGTH_SHORT).show();
             } else {
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("name", name);
-                map.put("thumb_id", thumb_downloadUrl.toString());
-                Log.e(TAG, "onClick: thumbUrl:" + thumb_downloadUrl.toString());
-                try {
-                    firebaseFirestore.collection("Users").document(userId).set(map)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    startActivity(new Intent(PostRegisterFirst.this, PostRegisterSecond.class));
-                                } else {
-                                    Toast.makeText(PostRegisterFirst.this, "some error " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("nameError", "onClick: error " + e.getMessage());
-                }
+                detailsUpload(name,thumb_downloadUrl);
             }
         });
         thumbImage.setOnClickListener(v -> ImagePicker());
+    }
+
+    private void detailsUpload(String name, Uri thumb_downloadUrl) {
+        Log.e(TAG, "onCreate postreg: else" );
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("thumb_id", thumb_downloadUrl.toString());
+        Log.e(TAG, "onClick: thumbUrl:" + thumb_downloadUrl.toString());
+        try {
+            firebaseFirestore.collection("Users").document(userId).set(map)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            startActivity(new Intent(PostRegisterFirst.this, PostRegisterSecond.class));
+                        } else {
+                            Toast.makeText(PostRegisterFirst.this, "some error " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("nameError", "onClick: error " + e.getMessage());
+        }
     }
 
     private void initView() {
